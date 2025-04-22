@@ -34,9 +34,9 @@ const Index = () => {
       <TopNavigation />
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8 space-y-2">
-          <h1 className="text-4xl font-mono font-bold tracking-tight text-white">Learnings</h1>
+          <h1 className="text-4xl font-mono font-bold tracking-tight text-white">Notes</h1>
           <p className="text-lg text-zinc-400 font-mono">
-            Track your learning journey
+            Track your notes and learning journey
           </p>
         </div>
         <TaskList tasks={DEMO_TASKS} />
