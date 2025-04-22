@@ -1,4 +1,5 @@
-import { AlarmClock, Timer } from "lucide-react";
+
+import { AlarmClock } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
 import { Button } from "./ui/button";
 import { TimerModal } from "./TimerModal";
@@ -55,7 +56,7 @@ export function TimerButton() {
     <>
       <Button
         variant="outline"
-        className="rounded-full w-16 h-16 bg-white/90 hover:bg-white/95 flex items-center justify-center p-0 border-0 shadow-lg"
+        className="rounded-full w-16 h-16 bg-white/20 hover:bg-white/30 backdrop-blur-sm flex items-center justify-center p-0 border-0 shadow-lg"
         onClick={() => setModalOpen(true)}
         disabled={timerActive}
         style={{ transition: "box-shadow .3s" }}
@@ -67,18 +68,14 @@ export function TimerButton() {
             style={{
               minWidth: 90,
               border: "2px solid #fff",
-              boxShadow: "0 0 0 2px #ef4444, 0 0 18px 2px #ef444488"
+              boxShadow: "0 0 0 2px #ef4444, 0 0 12px 2px #ef444460"
             }}
             aria-live="polite"
           >
             {format(remaining)}
           </span>
         ) : (
-          <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-            <circle cx="12" cy="14" r="8" stroke="currentColor" strokeDasharray="2 2" />
-            <rect x="11" y="10" width="2" height="6" rx="1" fill="currentColor" />
-            <rect x="11" y="5" width="2" height="2" rx="1" fill="currentColor" />
-          </svg>
+          <AlarmClock className="w-8 h-8 text-red-500" />
         )}
       </Button>
       <TimerModal

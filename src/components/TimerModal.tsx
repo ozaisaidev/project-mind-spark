@@ -1,8 +1,9 @@
 
 import { useState, useRef, useEffect } from "react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "./ui/button";
 import { AlarmClock } from "lucide-react";
+import { Slider } from "./ui/slider";
 
 interface TimerModalProps {
   isOpen: boolean;
@@ -19,6 +20,11 @@ export function TimerModal({ isOpen, onClose, onTimerStart, onTimerReset }: Time
   const [remaining, setRemaining] = useState(0);
   const [isDone, setIsDone] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  
+  // Refs for number pickers
+  const hoursRef = useRef<HTMLDivElement>(null);
+  const minutesRef = useRef<HTMLDivElement>(null);
+  const secondsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!isOpen) {
@@ -90,40 +96,104 @@ export function TimerModal({ isOpen, onClose, onTimerStart, onTimerReset }: Time
     if (onTimerReset) onTimerReset();
   };
 
-  // Card content
+  // Generate picker items
+  const generatePickerItems = (max: number) => {
+    return Array.from({ length: max + 1 }, (_, i) => i);
+  };
+
+  const handleWheelHours = (e: React.WheelEvent) => {
+    e.preventDefault();
+    if (running || isDone) return;
+    setHours(prev => {
+      if (e.deltaY < 0) {
+        return prev < 23 ? prev + 1 : 0;
+      } else {
+        return prev > 0 ? prev - 1 : 23;
+      }
+    });
+  };
+
+  const handleWheelMinutes = (e: React.WheelEvent) => {
+    e.preventDefault();
+    if (running || isDone) return;
+    setMinutes(prev => {
+      if (e.deltaY < 0) {
+        return prev < 59 ? prev + 1 : 0;
+      } else {
+        return prev > 0 ? prev - 1 : 59;
+      }
+    });
+  };
+
+  const handleWheelSeconds = (e: React.WheelEvent) => {
+    e.preventDefault();
+    if (running || isDone) return;
+    setSeconds(prev => {
+      if (e.deltaY < 0) {
+        return prev < 59 ? prev + 1 : 0;
+      } else {
+        return prev > 0 ? prev - 1 : 59;
+      }
+    });
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
-        className="p-0 bg-zinc-950 rounded-3xl shadow-2xl border-none max-w-xs flex flex-col items-center"
+        className="p-0 bg-zinc-950/90 backdrop-blur-md rounded-3xl shadow-2xl border-none max-w-xs flex flex-col items-center"
       >
+        <DialogTitle className="sr-only">Set Timer</DialogTitle>
         <div className="w-full flex flex-col items-center py-8 px-6">
           <AlarmClock className="w-12 h-12 text-red-500 mb-4" />
-          <div className="text-lg font-bold font-mono text-white mb-3">Set Timer</div>
-          <div className="flex space-x-2 items-center mb-4">
-            <input type="number"
-              className="w-12 px-2 py-1 rounded bg-zinc-800 text-white text-center font-mono focus:outline-none"
-              min={0} max={23} value={hours}
-              onChange={e => setHours(Math.max(0, Math.min(23, Number(e.target.value))))}
-              disabled={running || isDone}
-            />
-            <span className="text-white font-mono">:</span>
-            <input type="number"
-              className="w-12 px-2 py-1 rounded bg-zinc-800 text-white text-center font-mono focus:outline-none"
-              min={0} max={59} value={minutes}
-              onChange={e => setMinutes(Math.max(0, Math.min(59, Number(e.target.value))))}
-              disabled={running || isDone}
-            />
-            <span className="text-white font-mono">:</span>
-            <input type="number"
-              className="w-12 px-2 py-1 rounded bg-zinc-800 text-white text-center font-mono focus:outline-none"
-              min={0} max={59} value={seconds}
-              onChange={e => setSeconds(Math.max(0, Math.min(59, Number(e.target.value))))}
-              disabled={running || isDone}
-            />
+          <div className="text-lg font-bold font-mono text-white mb-6">Set Timer</div>
+          
+          <div className="flex space-x-2 items-center mb-6 relative">
+            {/* Hours Picker */}
+            <div 
+              ref={hoursRef}
+              className="w-14 h-14 overflow-hidden rounded-lg bg-zinc-800/70 relative flex items-center justify-center"
+              onWheel={handleWheelHours}
+            >
+              <div className="absolute top-0 left-0 right-0 h-1/3 bg-gradient-to-b from-zinc-800 to-transparent pointer-events-none z-10"></div>
+              <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-zinc-800 to-transparent pointer-events-none z-10"></div>
+              <div className="text-white font-mono text-2xl">{format(hours)}</div>
+            </div>
+            
+            <span className="text-white font-mono text-2xl">:</span>
+            
+            {/* Minutes Picker */}
+            <div 
+              ref={minutesRef}
+              className="w-14 h-14 overflow-hidden rounded-lg bg-zinc-800/70 relative flex items-center justify-center"
+              onWheel={handleWheelMinutes}
+            >
+              <div className="absolute top-0 left-0 right-0 h-1/3 bg-gradient-to-b from-zinc-800 to-transparent pointer-events-none z-10"></div>
+              <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-zinc-800 to-transparent pointer-events-none z-10"></div>
+              <div className="text-white font-mono text-2xl">{format(minutes)}</div>
+            </div>
+            
+            <span className="text-white font-mono text-2xl">:</span>
+            
+            {/* Seconds Picker */}
+            <div 
+              ref={secondsRef}
+              className="w-14 h-14 overflow-hidden rounded-lg bg-zinc-800/70 relative flex items-center justify-center"
+              onWheel={handleWheelSeconds}
+            >
+              <div className="absolute top-0 left-0 right-0 h-1/3 bg-gradient-to-b from-zinc-800 to-transparent pointer-events-none z-10"></div>
+              <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-zinc-800 to-transparent pointer-events-none z-10"></div>
+              <div className="text-white font-mono text-2xl">{format(seconds)}</div>
+            </div>
           </div>
+          
+          <div className="text-xs text-zinc-400 mb-4 font-mono italic">
+            Scroll to set time
+          </div>
+          
           <div className="mb-4 font-mono text-lg text-white">
-            {`${format(Math.floor(remaining / 3600))}:${format(Math.floor((remaining % 3600) / 60))}:${format(remaining % 60)}`}
+            {running && `${format(Math.floor(remaining / 3600))}:${format(Math.floor((remaining % 3600) / 60))}:${format(remaining % 60)}`}
           </div>
+          
           {isDone ? (
             <div className="w-full flex flex-col items-center">
               <div className="text-red-500 text-md font-bold font-mono mb-2 animate-pulse">
@@ -140,7 +210,7 @@ export function TimerModal({ isOpen, onClose, onTimerStart, onTimerReset }: Time
             <div className="flex gap-2 w-full">
               <Button
                 className="flex-1 bg-red-500 hover:bg-red-600 text-white"
-                disabled={running || remaining > 0}
+                disabled={running || (hours === 0 && minutes === 0 && seconds === 0)}
                 onClick={start}
               >
                 Start

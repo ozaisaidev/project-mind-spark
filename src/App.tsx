@@ -10,7 +10,6 @@ import ProjectDetail from "./pages/ProjectDetail";
 import Todos from "./pages/Todos";
 import Timer from "./pages/Timer";
 import NotFound from "./pages/NotFound";
-import { TimerButton } from "./components/TimerButton";
 
 const queryClient = new QueryClient();
 
@@ -20,7 +19,6 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <TimerButton />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/projects" element={<Projects />} />

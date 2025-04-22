@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
 import { Task, Project } from "@/types"
@@ -73,7 +74,7 @@ const statusColumns = [
 export default function ProjectDetail() {
   const { id } = useParams<{ id: string }>();
   const [project, setProject] = useState<Project | undefined>(undefined);
-  const [tasks, setTasks] = useState<Task[]>(DEMO_TASKS);
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [draggedTaskId, setDraggedTaskId] = useState<string | null>(null);
   const [columnAnim, setColumnAnim] = useState<{[key:string]: "none" | "green" | "red"}>({
@@ -171,60 +172,69 @@ export default function ProjectDetail() {
           </p>
         )}
 
-        <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6 min-h-[400px]">
+        <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-10 min-h-[400px]">
           {statusColumns.map((col, idx) => (
             <div
               key={col.key}
               className={`
-                bg-zinc-800 rounded-2xl relative flex flex-col min-h-[350px] animate-card-entrance px-4 pt-4 pb-4
+                relative flex flex-col min-h-[350px] animate-card-entrance px-4 pt-4 pb-4
+                bg-zinc-800/40 backdrop-blur-sm rounded-2xl
                 border-2 
-                ${columnAnim[col.key] === "green" ? "border-green-400 animate-glow-green" : ""}
-                ${columnAnim[col.key] === "red" ? "border-red-400 animate-glow-red" : ""}
-                border-zinc-400/60
-                transition-shadow
+                ${columnAnim[col.key] === "green" ? "border-green-400/60 animate-glow-green" : ""}
+                ${columnAnim[col.key] === "red" ? "border-red-400/60 animate-glow-red" : ""}
+                ${columnAnim[col.key] === "none" ? "border-zinc-400/30" : ""}
+                transition-all duration-300
                 `}
               style={{
                 marginLeft: 0,
                 marginRight: 0,
                 zIndex: 1,
-                boxShadow: (columnAnim[col.key] === "green" || columnAnim[col.key] === "red") 
-                  ? "0 0 10px 2px rgba(40,255,80,0.25)" : undefined,
-                borderStyle: 'solid',
+                boxShadow: (columnAnim[col.key] === "green") 
+                  ? "0 0 8px 2px rgba(40,255,80,0.15)" 
+                  : (columnAnim[col.key] === "red")
+                  ? "0 0 8px 2px rgba(255,40,80,0.15)"
+                  : "0 4px 20px rgba(0,0,0,0.2)",
+                borderStyle: 'dashed',
                 borderRadius: "1.25rem",
                 position: 'relative',
               }}
               onDragOver={onDragOver}
               onDrop={e => onDrop(e, col.key)}
             >
+              {/* Column separator */}
               {(idx < 2) && (
                 <div 
-                  className="absolute top-[22px] right-[-24px] bottom-[22px] w-0.5 flex items-stretch pointer-events-none"
+                  className="absolute top-1/2 right-[-32px] h-[80%] transform -translate-y-1/2 flex items-center justify-center pointer-events-none"
                   style={{
-                    zIndex: 2,
+                    zIndex: 3,
+                    width: "50px"
                   }}
                 >
-                  <div style={{
-                    width: "100%",
-                    minWidth: "8px",
-                    height: "100%",
-                    marginLeft: "8px",
-                    background: `repeating-linear-gradient(
-                      to bottom,
-                      #d4d4d8 0px,
-                      #d4d4d8 5px,
-                      transparent 5px,
-                      transparent 14px
-                    )`,
-                    opacity: 0.7,
-                    borderRadius: "4px"
-                  }} />
+                  <div
+                    style={{
+                      width: "4px",
+                      height: "85%",
+                      background: `repeating-linear-gradient(
+                        to bottom,
+                        rgba(255, 255, 255, 0.4) 0px,
+                        rgba(255, 255, 255, 0.4) 5px,
+                        transparent 5px,
+                        transparent 14px
+                      )`,
+                      borderRadius: "4px"
+                    }}
+                  />
                 </div>
               )}
-              <div className="flex justify-center mb-4 mt-1">
+              
+              {/* Column header */}
+              <div className="flex justify-center mb-6 mt-1">
                 <h2 className="text-lg text-white font-bold font-mono tracking-tight select-none text-center">
                   {col.label}
                 </h2>
               </div>
+              
+              {/* Column content */}
               <div className="space-y-4 flex-1 min-h-[50px]">
                 {tasks.filter(task => task.status === col.key).map(task => (
                   <div
@@ -272,14 +282,14 @@ export default function ProjectDetail() {
       <style>
         {`
           @keyframes glowGreen {
-            0% { box-shadow: 0 0 0 0 #7fff99; border-color: #22c55e; }
-            40% { box-shadow: 0 0 16px 6px #7fff99; border-color: #22c55e; }
-            100% { box-shadow: 0 0 0 0 #7fff99; border-color: #d4d4d8; }
+            0% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.15); border-color: rgba(74, 222, 128, 0.4); }
+            40% { box-shadow: 0 0 12px 4px rgba(74, 222, 128, 0.3); border-color: rgba(74, 222, 128, 0.7); }
+            100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.15); border-color: rgba(212, 212, 216, 0.3); }
           }
           @keyframes glowRed {
-            0% { box-shadow: 0 0 0 0 #ea384c; border-color: #ea384c; }
-            40% { box-shadow: 0 0 16px 6px #ea384c; border-color: #ea384c; }
-            100% { box-shadow: 0 0 0 0 #ea384c; border-color: #d4d4d8; }
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.4); }
+            40% { box-shadow: 0 0 12px 4px rgba(239, 68, 68, 0.3); border-color: rgba(239, 68, 68, 0.7); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.15); border-color: rgba(212, 212, 216, 0.3); }
           }
           .animate-glow-green {
             animation: glowGreen 0.7s;
