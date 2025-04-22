@@ -1,14 +1,13 @@
 
 import { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
-import { TaskList } from "@/components/TaskList"
-import { TaskForm } from "@/components/TaskForm"
+import { Task, Project } from "@/types"
+import { TaskCard } from "@/components/TaskCard"
 import { Button } from "@/components/ui/button"
 import { Plus, ArrowLeft } from "lucide-react"
-import { Task, Project } from "@/types"
 import { v4 as uuidv4 } from 'uuid'
+import { TaskForm } from "@/components/TaskForm"
 
-// Demo tasks
 const DEMO_TASKS: Task[] = [
   {
     id: "1",
@@ -44,7 +43,6 @@ const DEMO_TASKS: Task[] = [
   }
 ]
 
-// Demo projects
 const DEMO_PROJECTS: Project[] = [
   {
     id: "1",
@@ -66,17 +64,52 @@ const DEMO_PROJECTS: Project[] = [
   },
 ]
 
+const statusColumns = [
+  { key: "pending", label: "To Do" },
+  { key: "in-progress", label: "In Development" },
+  { key: "completed", label: "Done" },
+] as const;
+
 export default function ProjectDetail() {
   const { id } = useParams<{ id: string }>();
   const [project, setProject] = useState<Project | undefined>(undefined);
   const [tasks, setTasks] = useState<Task[]>(DEMO_TASKS);
   const [isFormOpen, setIsFormOpen] = useState(false);
-  
+
+  // For drag state
+  const [draggedTaskId, setDraggedTaskId] = useState<string | null>(null);
+
   useEffect(() => {
-    // In a real app, you would fetch the project from an API
     const foundProject = DEMO_PROJECTS.find(p => p.id === id);
     setProject(foundProject);
+    if (id) {
+      const projectTasks = DEMO_TASKS.filter(task => task.projectId === id);
+      setTasks(projectTasks);
+    }
   }, [id]);
+
+  const onDragStart = (e: React.DragEvent, taskId: string) => {
+    setDraggedTaskId(taskId);
+    e.dataTransfer.effectAllowed = "move";
+  };
+
+  const onDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+  };
+
+  const onDrop = (e: React.DragEvent, newStatus: "pending" | "in-progress" | "completed") => {
+    e.preventDefault();
+    if (!draggedTaskId) return;
+    setTasks(prev =>
+      prev.map(task =>
+        task.id === draggedTaskId
+          ? { ...task, status: newStatus }
+          : task
+      )
+    );
+    setDraggedTaskId(null);
+  };
 
   const handleAddTask = (taskData: { title: string; description: string; eta: string; projectId?: string }) => {
     const newTask: Task = {
@@ -87,7 +120,6 @@ export default function ProjectDetail() {
       eta: taskData.eta,
       projectId: id
     };
-    
     setTasks([...tasks, newTask]);
     setIsFormOpen(false);
   };
@@ -103,25 +135,56 @@ export default function ProjectDetail() {
   return (
     <div className="min-h-screen bg-zinc-900">
       <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <Link to="/projects" className="inline-flex items-center text-zinc-400 hover:text-white mb-4">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            <span className="font-mono">Back to Projects</span>
-          </Link>
-          
-          <h1 className="text-4xl font-mono font-bold tracking-tight text-white">{project.title}</h1>
-          {project.description && (
-            <p className="text-lg text-zinc-400 font-mono mt-2">
-              {project.description}
-            </p>
-          )}
+        <Link to="/projects" className="inline-flex items-center text-zinc-400 hover:text-white mb-4">
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          <span className="font-mono">Back to Projects</span>
+        </Link>
+        <h1 className="text-4xl font-mono font-bold tracking-tight text-white">{project.title}</h1>
+        {project.description && (
+          <p className="text-lg text-zinc-400 font-mono mt-2">
+            {project.description}
+          </p>
+        )}
+
+        {/* STATUS COLUMNS */}
+        <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6 min-h-[400px]">
+          {statusColumns.map(col => (
+            <div
+              key={col.key}
+              className="bg-zinc-800 rounded-2xl p-4 flex flex-col min-h-[350px] animate-card-entrance"
+              onDragOver={onDragOver}
+              onDrop={e => onDrop(e, col.key)}
+            >
+              <h2 className="mb-4 text-lg text-white font-bold font-mono tracking-tight select-none">
+                {col.label}
+              </h2>
+              <div className="space-y-4 flex-1 min-h-[50px]">
+                {tasks.filter(task => task.status === col.key).map(task => (
+                  <div
+                    key={task.id}
+                    draggable
+                    onDragStart={e => onDragStart(e, task.id)}
+                    onDragEnd={() => setDraggedTaskId(null)}
+                    className={`transition-transform duration-200 ${
+                      draggedTaskId === task.id ? "opacity-60 scale-95" : ""
+                    }`}
+                  >
+                    <TaskCard
+                      title={task.title}
+                      description={task.description}
+                      status={task.status}
+                      eta={task.eta}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
-        
-        <TaskList tasks={tasks} projectId={id} />
 
         <div className="fixed bottom-8 right-8 animate-fade-in">
-          <Button 
-            size="lg" 
+          <Button
+            size="lg"
             className="rounded-full shadow-lg bg-red-500 hover:bg-red-600 text-white transition-all duration-300 hover:scale-105"
             onClick={() => setIsFormOpen(true)}
           >
@@ -129,7 +192,7 @@ export default function ProjectDetail() {
           </Button>
         </div>
 
-        <TaskForm 
+        <TaskForm
           isOpen={isFormOpen}
           onClose={() => setIsFormOpen(false)}
           onSubmit={handleAddTask}
