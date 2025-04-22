@@ -3,6 +3,7 @@ import { useState } from "react"
 import { Todo } from "@/types"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Progress } from "@/components/ui/progress"
+import { cn } from "@/lib/utils"
 
 interface TodoItemProps {
   todo: Todo;
@@ -30,8 +31,7 @@ export function TodoItem({ todo, onToggle }: TodoItemProps) {
             <div className="w-24">
               <Progress 
                 value={todo.completed ? 100 : 0} 
-                className="h-2 bg-zinc-800"
-                indicatorClassName="bg-red-500"
+                className={cn("h-2 bg-zinc-800", todo.completed && "bg-red-500/20")}
               />
             </div>
           </div>
