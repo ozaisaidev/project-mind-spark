@@ -1,12 +1,12 @@
-
 import { useState } from "react"
 import { TodoItem } from "@/components/TodoItem"
-import { Todo } from "@/types"
 import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
+import { Plus, ArrowLeft } from "lucide-react"
+import { Link } from "react-router-dom"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { v4 as uuidv4 } from 'uuid'
+import { Todo } from "@/types"
 
 // Demo todos
 const DEMO_TODOS: Todo[] = [
@@ -58,11 +58,22 @@ export default function Todos() {
   return (
     <div className="min-h-screen bg-zinc-900">
       <div className="container mx-auto px-4 py-8">
-        <div className="mb-8 space-y-2">
-          <h1 className="text-4xl font-mono font-bold tracking-tight text-white">To-dos</h1>
-          <p className="text-lg text-zinc-400 font-mono">
-            Track your to-do items
-          </p>
+        <div className="mb-8">
+          <Link 
+            to="/" 
+            className="inline-flex items-center text-zinc-400 hover:text-white mb-4"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            <span className="font-mono">Back</span>
+          </Link>
+          <div className="space-y-2">
+            <h1 className="text-4xl font-mono font-bold tracking-tight text-white">
+              To-dos
+            </h1>
+            <p className="text-lg text-zinc-400 font-mono">
+              Track your to-do items
+            </p>
+          </div>
         </div>
         
         <div className="max-w-2xl mx-auto">

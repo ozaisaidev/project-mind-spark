@@ -1,9 +1,9 @@
-
 import { useState } from "react"
 import { ProjectCard } from "@/components/ProjectCard"
 import { Project } from "@/types"
 import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
+import { Plus, ArrowLeft } from "lucide-react"
+import { Link } from "react-router-dom"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -52,11 +52,22 @@ export default function Projects() {
   return (
     <div className="min-h-screen bg-zinc-900">
       <div className="container mx-auto px-4 py-8">
-        <div className="mb-8 space-y-2">
-          <h1 className="text-4xl font-mono font-bold tracking-tight text-white">Projects</h1>
-          <p className="text-lg text-zinc-400 font-mono">
-            Manage your project portfolios
-          </p>
+        <div className="mb-8">
+          <Link 
+            to="/" 
+            className="inline-flex items-center text-zinc-400 hover:text-white mb-4"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            <span className="font-mono">Back</span>
+          </Link>
+          <div className="space-y-2">
+            <h1 className="text-4xl font-mono font-bold tracking-tight text-white">
+              Projects
+            </h1>
+            <p className="text-lg text-zinc-400 font-mono">
+              Manage your project portfolios
+            </p>
+          </div>
         </div>
         
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
