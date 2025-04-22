@@ -1,6 +1,6 @@
+
 import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { Clock } from "lucide-react"
 import { TaskDetailDialog } from "./TaskDetailDialog"
 
@@ -13,41 +13,34 @@ interface TaskCardProps {
 
 export function TaskCard({ title, description, status, eta }: TaskCardProps) {
   const [showDetail, setShowDetail] = useState(false)
-  
-  const statusColors = {
-    pending: "bg-zinc-500 text-white",
-    "in-progress": "bg-red-600 text-white",
-    completed: "bg-zinc-400 text-white",
-  }
 
   return (
     <>
       <Card 
-        className="w-full transition-all duration-300 ease-in-out hover:shadow-lg hover:translate-y-[-2px] bg-[#eeeeeeff] border-zinc-200 animate-fade-in cursor-pointer"
+        className="w-full transition-all duration-300 ease-in-out hover:shadow-lg hover:translate-y-[-2px] bg-zinc-900 border-zinc-800 cursor-pointer group"
         onClick={() => setShowDetail(true)}
       >
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
           <div className="flex flex-col space-y-1.5">
-            <CardTitle className="text-sm font-mono uppercase text-zinc-800 animate-in fade-in slide-in-from-left duration-300">
+            <CardTitle className="text-base font-mono text-white">
               {title}
             </CardTitle>
             {eta && (
-              <div className="flex items-center space-x-1.5 animate-in fade-in slide-in-from-left duration-500 delay-150">
-                <Clock className="w-3 h-3 text-zinc-600" />
-                <span className="text-[10px] text-zinc-600 font-mono lowercase">{eta}</span>
+              <div className="flex items-center space-x-1.5">
+                <Clock className="w-3 h-3 text-zinc-400" />
+                <span className="text-[10px] text-zinc-400 font-mono lowercase">{eta}</span>
               </div>
             )}
           </div>
-          <Badge 
-            variant="outline" 
-            className={`${statusColors[status]} font-mono text-[10px] lowercase tracking-wide px-2.5 py-0.5 rounded-full animate-in fade-in slide-in-from-right duration-300`}
-          >
-            {status === "in-progress" ? "in progress" : status}
-          </Badge>
+          <div className={`h-2.5 w-2.5 rounded-full ${
+            status === 'completed' ? 'bg-red-500' :
+            status === 'in-progress' ? 'bg-red-500/50' :
+            'bg-zinc-700'
+          }`} />
         </CardHeader>
         {description && (
           <CardContent className="pt-1">
-            <p className="text-sm text-zinc-600 font-mono animate-in fade-in slide-in-from-bottom duration-500 delay-200">
+            <p className="text-xs text-zinc-400 font-mono line-clamp-2">
               {description}
             </p>
           </CardContent>
