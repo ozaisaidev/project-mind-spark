@@ -146,21 +146,31 @@ export default function ProjectDetail() {
           </p>
         )}
 
-        {/* STATUS COLUMNS with DOTTED SEPARATORS and CENTERED TITLES */}
+        {/* STATUS COLUMNS with IMPROVED DOTTED SEPARATORS and CENTERED TITLES */}
         <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-0 min-h-[400px]">
           {statusColumns.map((col, idx) => (
             <div
               key={col.key}
               className={`
-                bg-zinc-800 rounded-3xl p-4 flex flex-col min-h-[350px] animate-card-entrance
-                ${idx !== 2 ? "md:border-r-2 border-dotted border-zinc-400" : ""}
+                bg-zinc-800 rounded-2xl relative flex flex-col min-h-[350px] animate-card-entrance px-4 pt-4 pb-4
+                ${idx === 0 ? 'border-l-0 border-t-0 border-b-0 border-dotted' : ''}
+                ${idx < 2 ? "border-r-2 border-dotted border-zinc-400/60" : ""}
+                border-2 border-zinc-400/60
+                transition-shadow
                 `}
               onDragOver={onDragOver}
               onDrop={e => onDrop(e, col.key)}
+              style={{
+                marginLeft: idx === 0 ? 0 : '-2px', // visually connect dotted lines
+                marginRight: 0,
+                zIndex: 1,
+              }}
             >
-              <h2 className="mb-4 text-lg text-white font-bold font-mono tracking-tight select-none text-center">
-                {col.label}
-              </h2>
+              <div className="flex justify-center mb-4 mt-1">
+                <h2 className="text-lg text-white font-bold font-mono tracking-tight select-none text-center">
+                  {col.label}
+                </h2>
+              </div>
               <div className="space-y-4 flex-1 min-h-[50px]">
                 {tasks.filter(task => task.status === col.key).map(task => (
                   <div

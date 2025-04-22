@@ -7,9 +7,11 @@ import { AlarmClock } from "lucide-react";
 interface TimerModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onTimerStart?: (seconds: number) => void;
+  onTimerReset?: () => void;
 }
 
-export function TimerModal({ isOpen, onClose }: TimerModalProps) {
+export function TimerModal({ isOpen, onClose, onTimerStart, onTimerReset }: TimerModalProps) {
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
@@ -42,6 +44,8 @@ export function TimerModal({ isOpen, onClose }: TimerModalProps) {
             if (window.Notification && Notification.permission === "granted") {
               new Notification("Time's up!", { body: "Your timer finished." });
             }
+            // Dispatch reset event to TimerButton
+            if (onTimerReset) onTimerReset();
             return 0;
           }
           return prev - 1;
@@ -51,7 +55,7 @@ export function TimerModal({ isOpen, onClose }: TimerModalProps) {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [running, remaining]);
+  }, [running, remaining, onTimerReset]);
 
   // Request notification permission if not already granted
   useEffect(() => {
@@ -71,6 +75,7 @@ export function TimerModal({ isOpen, onClose }: TimerModalProps) {
       setRemaining(total);
       setRunning(true);
       setIsDone(false);
+      if (onTimerStart) onTimerStart(total);
     }
   };
 
@@ -82,6 +87,7 @@ export function TimerModal({ isOpen, onClose }: TimerModalProps) {
     setMinutes(0);
     setSeconds(0);
     if (intervalRef.current) clearInterval(intervalRef.current);
+    if (onTimerReset) onTimerReset();
   };
 
   // Card content
