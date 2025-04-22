@@ -1,5 +1,5 @@
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Todo } from "@/types"
 import { Checkbox } from "@/components/ui/checkbox"
 import { cn } from "@/lib/utils"
@@ -10,14 +10,26 @@ interface TodoItemProps {
 }
 
 export function TodoItem({ todo, onToggle }: TodoItemProps) {
+  const [isSliding, setIsSliding] = useState(false);
+
   const handleToggle = () => {
-    onToggle(todo.id, !todo.completed);
+    if (!todo.completed) {
+      onToggle(todo.id, true);
+    } else {
+      setIsSliding(true);
+      // Wait for animations to complete before toggling
+      setTimeout(() => {
+        onToggle(todo.id, false);
+        setIsSliding(false);
+      }, 1500); // Wait for glow (1s) + slide (0.5s)
+    }
   };
 
   return (
     <div className={cn(
-      "flex items-center justify-between p-4 bg-zinc-900 rounded-lg mb-3 border border-zinc-800 transition-all duration-500",
-      todo.completed && "animate-glow border-red-500/50"
+      "flex items-center justify-between p-4 bg-zinc-900 rounded-lg mb-3 border border-zinc-800 transition-all duration-500 animate-card-entrance",
+      todo.completed && "animate-glow border-red-500/50",
+      isSliding && "animate-slide-right"
     )}>
       <div className="flex items-center space-x-3 flex-1">
         <Checkbox 
