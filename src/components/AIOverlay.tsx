@@ -12,10 +12,10 @@ export function AIOverlay() {
       <div className="fixed bottom-8 right-8 animate-fade-in">
         <Button 
           size="lg" 
-          className="rounded-full shadow-lg bg-zinc-800 hover:bg-zinc-700 transition-all duration-300 hover:scale-105"
+          className="rounded-full shadow-lg bg-red-500 hover:bg-red-600 text-white transition-all duration-300 hover:scale-105"
           onClick={() => setIsFormOpen(true)}
         >
-          <Plus className="h-6 w-6" />
+          <Plus className="h-6 w-6 text-white" />
         </Button>
       </div>
       <TaskForm 
