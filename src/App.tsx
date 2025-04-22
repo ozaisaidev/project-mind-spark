@@ -8,7 +8,9 @@ import Index from "./pages/Index";
 import Projects from "./pages/Projects";
 import ProjectDetail from "./pages/ProjectDetail";
 import Todos from "./pages/Todos";
+import Timer from "./pages/Timer";
 import NotFound from "./pages/NotFound";
+import { TimerButton } from "./components/TimerButton";
 
 const queryClient = new QueryClient();
 
@@ -18,11 +20,13 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <TimerButton />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/project/:id" element={<ProjectDetail />} />
           <Route path="/todos" element={<Todos />} />
+          <Route path="/timer" element={<Timer />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

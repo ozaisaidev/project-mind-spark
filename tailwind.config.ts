@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -112,7 +113,27 @@ export default {
             opacity: '1',
             transform: 'translateY(0)',
           },
-        }
+        },
+        fallDot: {
+          '0%': { 
+            transform: 'translateY(0)',
+            opacity: '1',
+          },
+          '100%': {
+            transform: 'translateY(100px)',
+            opacity: '0',
+          },
+        },
+        fillDot: {
+          '0%': { 
+            backgroundColor: 'rgb(63, 63, 70)',
+            transform: 'scale(0.8)',
+          },
+          '100%': {
+            backgroundColor: 'rgb(239, 68, 68)',
+            transform: 'scale(1)',
+          },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -120,6 +141,8 @@ export default {
         'glow': 'glow 1s ease-in-out',
         'slide-right': 'slideRight 0.5s ease-out forwards',
         'card-entrance': 'cardEntrance 0.3s ease-out',
+        'fall-dot': 'fallDot 0.5s ease-in forwards',
+        'fill-dot': 'fillDot 0.5s ease-out forwards',
       }
     }
   },
