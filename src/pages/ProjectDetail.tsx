@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
 import { Task, Project } from "@/types"
@@ -133,7 +132,7 @@ export default function ProjectDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-900">
+    <div className="min-h-screen bg-zinc-900 relative">
       <div className="container mx-auto px-4 py-8">
         <Link to="/projects" className="inline-flex items-center text-zinc-400 hover:text-white mb-4">
           <ArrowLeft className="w-4 h-4 mr-2" />
@@ -146,16 +145,19 @@ export default function ProjectDetail() {
           </p>
         )}
 
-        {/* STATUS COLUMNS */}
-        <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6 min-h-[400px]">
-          {statusColumns.map(col => (
+        {/* STATUS COLUMNS with DOTTED SEPARATORS and CENTERED TITLES */}
+        <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-0 min-h-[400px]">
+          {statusColumns.map((col, idx) => (
             <div
               key={col.key}
-              className="bg-zinc-800 rounded-2xl p-4 flex flex-col min-h-[350px] animate-card-entrance"
+              className={`
+                bg-zinc-800 rounded-3xl p-4 flex flex-col min-h-[350px] animate-card-entrance
+                ${idx !== 2 ? "md:border-r-2 border-dotted border-zinc-400" : ""}
+                `}
               onDragOver={onDragOver}
               onDrop={e => onDrop(e, col.key)}
             >
-              <h2 className="mb-4 text-lg text-white font-bold font-mono tracking-tight select-none">
+              <h2 className="mb-4 text-lg text-white font-bold font-mono tracking-tight select-none text-center">
                 {col.label}
               </h2>
               <div className="space-y-4 flex-1 min-h-[50px]">
@@ -182,7 +184,7 @@ export default function ProjectDetail() {
           ))}
         </div>
 
-        <div className="fixed bottom-8 right-8 animate-fade-in">
+        <div className="fixed bottom-8 right-8 animate-fade-in z-30">
           <Button
             size="lg"
             className="rounded-full shadow-lg bg-red-500 hover:bg-red-600 text-white transition-all duration-300 hover:scale-105"
@@ -198,6 +200,10 @@ export default function ProjectDetail() {
           onSubmit={handleAddTask}
           projectId={id}
         />
+      </div>
+      {/* Timer Button and Modal */}
+      <div className="fixed bottom-8 left-8 z-40">
+        <TimerButton />
       </div>
     </div>
   )
