@@ -75,9 +75,14 @@ export default function ProjectDetail() {
   const [project, setProject] = useState<Project | undefined>(undefined);
   const [tasks, setTasks] = useState<Task[]>(DEMO_TASKS);
   const [isFormOpen, setIsFormOpen] = useState(false);
-
-  // For drag state
   const [draggedTaskId, setDraggedTaskId] = useState<string | null>(null);
+  const [columnAnim, setColumnAnim] = useState<{[key:string]: "none" | "green" | "red"}>({
+    pending: "none",
+    "in-progress": "none",
+    completed: "none",
+  });
+
+  const colOrder = ["pending", "in-progress", "completed"];
 
   useEffect(() => {
     const foundProject = DEMO_PROJECTS.find(p => p.id === id);
@@ -101,6 +106,26 @@ export default function ProjectDetail() {
   const onDrop = (e: React.DragEvent, newStatus: "pending" | "in-progress" | "completed") => {
     e.preventDefault();
     if (!draggedTaskId) return;
+    const movedTask = tasks.find(task => task.id === draggedTaskId);
+    if (!movedTask) return;
+    const fromIdx = colOrder.indexOf(movedTask.status);
+    const toIdx = colOrder.indexOf(newStatus);
+    let animType: "green" | "red" | "none" = "none";
+    if (toIdx > fromIdx) animType = "green";
+    else if (toIdx < fromIdx) animType = "red";
+
+    setColumnAnim((prev) => ({
+      ...prev,
+      [newStatus]: animType,
+    }));
+
+    setTimeout(() => {
+      setColumnAnim((prev) => ({
+        ...prev,
+        [newStatus]: "none",
+      }));
+    }, 700);
+
     setTasks(prev =>
       prev.map(task =>
         task.id === draggedTaskId
@@ -146,26 +171,55 @@ export default function ProjectDetail() {
           </p>
         )}
 
-        {/* STATUS COLUMNS with IMPROVED DOTTED SEPARATORS and CENTERED TITLES */}
-        <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-0 min-h-[400px]">
+        <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6 min-h-[400px]">
           {statusColumns.map((col, idx) => (
             <div
               key={col.key}
               className={`
                 bg-zinc-800 rounded-2xl relative flex flex-col min-h-[350px] animate-card-entrance px-4 pt-4 pb-4
-                ${idx === 0 ? 'border-l-0 border-t-0 border-b-0 border-dotted' : ''}
-                ${idx < 2 ? "border-r-2 border-dotted border-zinc-400/60" : ""}
-                border-2 border-zinc-400/60
+                border-2 
+                ${columnAnim[col.key] === "green" ? "border-green-400 animate-glow-green" : ""}
+                ${columnAnim[col.key] === "red" ? "border-red-400 animate-glow-red" : ""}
+                border-zinc-400/60
                 transition-shadow
                 `}
-              onDragOver={onDragOver}
-              onDrop={e => onDrop(e, col.key)}
               style={{
-                marginLeft: idx === 0 ? 0 : '-2px', // visually connect dotted lines
+                marginLeft: 0,
                 marginRight: 0,
                 zIndex: 1,
+                boxShadow: (columnAnim[col.key] === "green" || columnAnim[col.key] === "red") 
+                  ? "0 0 10px 2px rgba(40,255,80,0.25)" : undefined,
+                borderStyle: 'solid',
+                borderRadius: "1.25rem",
+                position: 'relative',
               }}
+              onDragOver={onDragOver}
+              onDrop={e => onDrop(e, col.key)}
             >
+              {(idx < 2) && (
+                <div 
+                  className="absolute top-[22px] right-[-24px] bottom-[22px] w-0.5 flex items-stretch pointer-events-none"
+                  style={{
+                    zIndex: 2,
+                  }}
+                >
+                  <div style={{
+                    width: "100%",
+                    minWidth: "8px",
+                    height: "100%",
+                    marginLeft: "8px",
+                    background: `repeating-linear-gradient(
+                      to bottom,
+                      #d4d4d8 0px,
+                      #d4d4d8 5px,
+                      transparent 5px,
+                      transparent 14px
+                    )`,
+                    opacity: 0.7,
+                    borderRadius: "4px"
+                  }} />
+                </div>
+              )}
               <div className="flex justify-center mb-4 mt-1">
                 <h2 className="text-lg text-white font-bold font-mono tracking-tight select-none text-center">
                   {col.label}
@@ -212,10 +266,29 @@ export default function ProjectDetail() {
           projectId={id}
         />
       </div>
-      {/* Timer Button and Modal */}
       <div className="fixed bottom-8 left-8 z-40">
         <TimerButton />
       </div>
+      <style>
+        {`
+          @keyframes glowGreen {
+            0% { box-shadow: 0 0 0 0 #7fff99; border-color: #22c55e; }
+            40% { box-shadow: 0 0 16px 6px #7fff99; border-color: #22c55e; }
+            100% { box-shadow: 0 0 0 0 #7fff99; border-color: #d4d4d8; }
+          }
+          @keyframes glowRed {
+            0% { box-shadow: 0 0 0 0 #ea384c; border-color: #ea384c; }
+            40% { box-shadow: 0 0 16px 6px #ea384c; border-color: #ea384c; }
+            100% { box-shadow: 0 0 0 0 #ea384c; border-color: #d4d4d8; }
+          }
+          .animate-glow-green {
+            animation: glowGreen 0.7s;
+          }
+          .animate-glow-red {
+            animation: glowRed 0.7s;
+          }
+        `}
+      </style>
     </div>
   )
 }

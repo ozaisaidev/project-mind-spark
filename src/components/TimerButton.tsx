@@ -1,21 +1,20 @@
-
 import { AlarmClock, Timer } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
 import { Button } from "./ui/button";
 import { TimerModal } from "./TimerModal";
 
-// --- TIMER BUTTON WITH COUNTDOWN-RESPONSIVE RED PILL ---
 export function TimerButton() {
   const [modalOpen, setModalOpen] = useState(false);
   const [timerActive, setTimerActive] = useState(false);
   const [remaining, setRemaining] = useState(0);
+  const [tick, setTick] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Listen to timer start/reset events from TimerModal using a custom event
   useEffect(() => {
     function onStart(e: any) {
       setRemaining(e.detail.seconds);
       setTimerActive(true);
+      setModalOpen(false);
     }
     function onReset() {
       setTimerActive(false);
@@ -29,11 +28,11 @@ export function TimerButton() {
     }
   }, []);
 
-  // Countdown logic
   useEffect(() => {
     if (timerActive && remaining > 0) {
       intervalRef.current = setInterval(() => {
         setRemaining(prev => prev > 0 ? prev - 1 : 0);
+        setTick(t => !t);
       }, 1000);
     }
     if (remaining === 0 && timerActive) {
@@ -42,10 +41,8 @@ export function TimerButton() {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-    // eslint-disable-next-line
   }, [timerActive, remaining]);
 
-  // Format time as mm:ss or hh:mm:ss
   const format = (secs: number) => {
     const h = Math.floor(secs / 3600);
     const m = Math.floor((secs % 3600) / 60);
@@ -65,7 +62,8 @@ export function TimerButton() {
       >
         {timerActive ? (
           <span
-            className="animate-pulse px-5 py-2 bg-red-500 text-white rounded-full font-mono text-lg font-bold tracking-wider flex items-center justify-center shadow-lg transition-all"
+            className={`transition-all px-5 py-2 bg-red-500 text-white rounded-full font-mono text-lg font-bold tracking-wider flex items-center justify-center shadow-lg
+             ${tick ? "animate-[pulse_0.5s]" : ""}`}
             style={{
               minWidth: 90,
               border: "2px solid #fff",
@@ -76,15 +74,17 @@ export function TimerButton() {
             {format(remaining)}
           </span>
         ) : (
-          <AlarmClock className="w-8 h-8 text-red-500" />
+          <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+            <circle cx="12" cy="14" r="8" stroke="currentColor" strokeDasharray="2 2" />
+            <rect x="11" y="10" width="2" height="6" rx="1" fill="currentColor" />
+            <rect x="11" y="5" width="2" height="2" rx="1" fill="currentColor" />
+          </svg>
         )}
       </Button>
       <TimerModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
-        // Methods to communicate with TimerButton for countdown
         onTimerStart={seconds => {
-          // Custom event to tell TimerButton to start with seconds
           window.dispatchEvent(new CustomEvent('timer:start', { detail: { seconds } }));
         }}
         onTimerReset={() => {
