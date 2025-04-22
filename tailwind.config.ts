@@ -84,11 +84,26 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				glow: {
+					'0%': {
+						transform: 'scale(1)',
+						boxShadow: '0 0 0 0 rgba(239, 68, 68, 0.2)',
+					},
+					'50%': {
+						transform: 'scale(1.01)',
+						boxShadow: '0 0 20px 10px rgba(239, 68, 68, 0.3)',
+					},
+					'100%': {
+						transform: 'scale(1)',
+						boxShadow: '0 0 0 0 rgba(239, 68, 68, 0.2)',
+					},
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'glow': 'glow 1s ease-in-out',
 			}
 		}
 	},
