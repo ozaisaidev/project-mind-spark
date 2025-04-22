@@ -21,9 +21,9 @@ export function TaskCard({ title, description, status }: TaskCardProps) {
         <CardTitle className="text-sm font-mono text-zinc-800">{title}</CardTitle>
         <Badge 
           variant="outline" 
-          className={`${statusColors[status]} font-mono text-xs uppercase tracking-wider px-2 py-0.5 rounded-full`}
+          className={`${statusColors[status]} font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full`}
         >
-          {status.replace('-', ' ')}
+          {status === "in-progress" ? "in progress" : status}
         </Badge>
       </CardHeader>
       {description && (
