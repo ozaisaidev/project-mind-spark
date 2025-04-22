@@ -1,5 +1,12 @@
 
+import { useState } from "react"
 import { TaskCard } from "./TaskCard"
+
+interface Task {
+  title: string
+  description?: string
+  status: "pending" | "in-progress" | "completed"
+}
 
 const DEMO_TASKS = [
   {
@@ -20,9 +27,15 @@ const DEMO_TASKS = [
 ]
 
 export function TaskList() {
+  const [tasks, setTasks] = useState<Task[]>(DEMO_TASKS)
+
+  const addTask = (newTask: { title: string; description: string }) => {
+    setTasks([...tasks, { ...newTask, status: "pending" }])
+  }
+
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {DEMO_TASKS.map((task, index) => (
+      {tasks.map((task, index) => (
         <TaskCard key={index} {...task} />
       ))}
     </div>
