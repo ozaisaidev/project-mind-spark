@@ -21,7 +21,10 @@ export function AIOverlay() {
       <TaskForm 
         isOpen={isFormOpen}
         onClose={() => setIsFormOpen(false)}
-        onSubmit={(task) => console.log('New task:', task)}
+        onSubmit={(task) => {
+          console.log('New task:', task)
+          // Here we would handle the new task with ETA
+        }}
       />
     </>
   )

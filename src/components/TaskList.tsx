@@ -6,23 +6,27 @@ interface Task {
   title: string
   description?: string
   status: "pending" | "in-progress" | "completed"
+  eta?: string
 }
 
-const DEMO_TASKS = [
+const DEMO_TASKS: Task[] = [
   {
     title: "Design System Implementation",
     description: "Create a consistent design system for the application",
-    status: "in-progress" as const,
+    status: "in-progress",
+    eta: "3d"
   },
   {
     title: "AI Integration Research",
     description: "Research Gemini API integration possibilities",
-    status: "pending" as const,
+    status: "pending",
+    eta: "2d"
   },
   {
     title: "Project Setup",
     description: "Initial project setup and configuration",
-    status: "completed" as const,
+    status: "completed",
+    eta: "4h"
   },
 ]
 
