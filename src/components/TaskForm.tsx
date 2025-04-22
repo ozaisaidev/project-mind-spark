@@ -28,12 +28,14 @@ export function TaskForm({ isOpen, onClose, onSubmit }: TaskFormProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-zinc-900/95 border-zinc-800 font-mono animate-in fade-in zoom-in duration-200">
+      <DialogContent className="bg-zinc-900/95 border-zinc-800 font-mono max-w-lg mx-auto">
         <DialogHeader>
-          <DialogTitle className="text-white text-xl tracking-tight animate-in fade-in duration-200">new task</DialogTitle>
+          <DialogTitle className="text-white text-xl tracking-tight">
+            new task
+          </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-          <div className="space-y-2 animate-in fade-in duration-200 delay-75">
+          <div className="space-y-2">
             <Input
               placeholder="task title"
               value={title}
@@ -41,7 +43,7 @@ export function TaskForm({ isOpen, onClose, onSubmit }: TaskFormProps) {
               className="bg-zinc-800/50 border-zinc-700 text-white font-mono placeholder:text-zinc-500 text-sm tracking-wider"
             />
           </div>
-          <div className="space-y-2 animate-in fade-in duration-200 delay-100">
+          <div className="space-y-2">
             <Textarea
               placeholder="task description"
               value={description}
@@ -49,7 +51,7 @@ export function TaskForm({ isOpen, onClose, onSubmit }: TaskFormProps) {
               className="bg-zinc-800/50 border-zinc-700 text-white font-mono placeholder:text-zinc-500 min-h-[100px] text-sm tracking-wider resize-none"
             />
           </div>
-          <div className="space-y-2 animate-in fade-in duration-200 delay-150">
+          <div className="space-y-2">
             <div className="flex items-center space-x-2">
               <Clock className="w-4 h-4 text-zinc-400" />
               <Input
@@ -60,7 +62,7 @@ export function TaskForm({ isOpen, onClose, onSubmit }: TaskFormProps) {
               />
             </div>
           </div>
-          <div className="flex justify-end space-x-2 pt-4 animate-in fade-in duration-200 delay-200">
+          <div className="flex justify-end space-x-2 pt-4">
             <Button
               type="button"
               onClick={onClose}
