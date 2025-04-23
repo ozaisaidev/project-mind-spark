@@ -4,6 +4,7 @@ import { LogOut } from "lucide-react";
 
 export function TopNavigation() {
   const location = useLocation();
+  const isLogin = location.pathname === "/login";
   
   const isActive = (path: string) => {
     if (path === '/projects' && location.pathname.startsWith('/project/')) {
@@ -33,13 +34,15 @@ export function TopNavigation() {
             </NavLink>
           </div>
         </nav>
-        <button
-          onClick={handleLogout}
-          className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center px-3 py-2 rounded-md hover:bg-zinc-800 transition-colors"
-          aria-label="Logout"
-        >
-          <LogOut className="text-zinc-300 hover:text-orange-400" size={24} />
-        </button>
+        {!isLogin && (
+          <button
+            onClick={handleLogout}
+            className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center px-3 py-2 rounded-md hover:bg-zinc-800 transition-colors"
+            aria-label="Logout"
+          >
+            <LogOut className="text-zinc-300 hover:text-orange-400" size={24} />
+          </button>
+        )}
       </div>
     </div>
   )
@@ -71,4 +74,3 @@ function NavLink({ to, isActive, children }: NavLinkProps) {
     </Link>
   );
 }
-
