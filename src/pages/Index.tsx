@@ -29,12 +29,12 @@ const DEMO_TASKS = [
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-[linear-gradient(120deg,rgba(245,245,250,0.97)20%,rgba(236,237,241,0.94)100%)]">
+    <div className="min-h-screen bg-black">
       <TopNavigation />
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8 space-y-2">
-          <h1 className="text-4xl font-mono font-bold tracking-tight text-zinc-900">Notes</h1>
-          <p className="text-lg text-zinc-500 font-mono">
+          <h1 className="text-4xl font-mono font-bold tracking-tight text-zinc-100">Notes</h1>
+          <p className="text-lg text-zinc-400 font-mono">
             Track your notes and learning journey
           </p>
         </div>
