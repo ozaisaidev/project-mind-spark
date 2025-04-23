@@ -1,7 +1,8 @@
 
 import React, { useEffect, useRef } from "react";
 
-// Glassy orb that chases the mouse with a trailing lag effect.
+// Minimal glassmorphic orb that closely but softly chases the mouse.
+// Smaller, more transparent, no white border.
 export function MouseOrb() {
   const orbRef = useRef<HTMLDivElement>(null);
 
@@ -20,9 +21,9 @@ export function MouseOrb() {
 
     let running = true;
     function animate() {
-      // Interpolate toward mouse
-      orbX += (mouseX - orbX) * 0.14;
-      orbY += (mouseY - orbY) * 0.14;
+      // Move a bit faster than before for better tracking (0.21)
+      orbX += (mouseX - orbX) * 0.21;
+      orbY += (mouseY - orbY) * 0.21;
       if (orb) {
         orb.style.transform = `translate(-50%, -50%) translate(${orbX}px, ${orbY}px)`;
       }
@@ -41,19 +42,24 @@ export function MouseOrb() {
   return (
     <div
       ref={orbRef}
-      className="
-        fixed top-0 left-0 z-40 pointer-events-none
-        w-32 h-32 max-w-xs max-h-xs
+      className={
+        `
+        fixed top-0 left-0 z-40 pointer-events-none select-none
+        w-16 h-16
         rounded-full
-        backdrop-blur-2xl
-        border border-white/15
-        bg-white/10
-        shadow-[0_4px_24px_2px_rgba(100,100,119,0.08)]
-        transition-all
+        backdrop-blur-xl
+        bg-white/6
+        shadow-[0_8px_40px_8px_rgba(50,50,64,0.08)]
+        transition-all animate-fade-in
         will-change-transform
-      "
+        `
+      }
       style={{
         mixBlendMode: "lighten",
+        border: "none",        // Ensure NO border
+        boxShadow: "0 8px 40px 8px rgba(50,50,64,0.14)", // Soft shadow, less obvious
+        background: "linear-gradient(135deg, rgba(70,68,130,0.13) 0%, rgba(80,80,120,0.10) 100%)",
+        opacity: 0.88,
       }}
     ></div>
   );

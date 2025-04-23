@@ -4,12 +4,12 @@ import { useEffect, useState, useRef } from "react";
 import { Button } from "./ui/button";
 import { TimerModal } from "./TimerModal";
 
+// Glass morphism and minimal border for timer button
 export function TimerButton() {
   const [modalOpen, setModalOpen] = useState(false);
   const [timerActive, setTimerActive] = useState(false);
   const [remaining, setRemaining] = useState(0);
   const [tick, setTick] = useState(false);
-  const [flash, setFlash] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
@@ -56,13 +56,25 @@ export function TimerButton() {
 
   return (
     <>
-      <div className="glass shadow-2xl border border-white/20 rounded-2xl p-2">
+      <div
+        className="glass-morphism shadow-none border-none rounded-2xl p-2"
+        style={{
+          background: "rgba(28, 30, 36, 0.71)", // dark glassmorphism
+          boxShadow: "0 4px 28px 0 rgba(25,20,40,.21)",
+          border: "none",
+          transition: "box-shadow .4s",
+        }}
+      >
         <Button
           variant="outline"
-          className="rounded-full w-16 h-16 bg-white/20 hover:bg-white/30 backdrop-blur-sm flex items-center justify-center p-0 border-0 shadow-lg"
+          className="rounded-full w-16 h-16 bg-zinc-800/80 hover:bg-zinc-800/70 backdrop-blur-lg flex items-center justify-center p-0 border-none shadow-none"
           onClick={() => setModalOpen(true)}
           disabled={timerActive}
-          style={{ transition: "box-shadow .3s" }}
+          style={{
+            border: "none",
+            background: "rgba(44, 44, 52, 0.70)",
+            boxShadow: "0 3px 18px 0 rgba(40,20,40,.10)"
+          }}
         >
           {timerActive ? (
             <span
