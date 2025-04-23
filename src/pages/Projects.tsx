@@ -1,3 +1,4 @@
+
 import { useState } from "react"
 import { ProjectCard } from "@/components/ProjectCard"
 import { Project } from "@/types"
@@ -8,8 +9,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { v4 as uuidv4 } from 'uuid'
+import { TopNavigation } from "@/components/TopNavigation"
 
-// Demo projects
 const DEMO_PROJECTS: Project[] = [
   {
     id: "1",
@@ -50,27 +51,28 @@ export default function Projects() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-900">
+    <div className="min-h-screen bg-[linear-gradient(120deg,rgba(245,245,250,0.97)20%,rgba(236,237,241,0.94)100%)]">
+      <TopNavigation />
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <Link 
             to="/" 
-            className="inline-flex items-center text-zinc-400 hover:text-white mb-4"
+            className="inline-flex items-center text-zinc-400 hover:text-zinc-700 mb-4"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             <span className="font-mono">Back</span>
           </Link>
           <div className="space-y-2">
-            <h1 className="text-4xl font-mono font-bold tracking-tight text-white">
+            <h1 className="text-4xl font-mono font-bold tracking-tight text-zinc-900">
               Projects
             </h1>
-            <p className="text-lg text-zinc-400 font-mono">
+            <p className="text-lg text-zinc-500 font-mono">
               Manage your project portfolios
             </p>
           </div>
         </div>
         
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-7 md:grid-cols-2 lg:grid-cols-3">
           {projects.map((project) => (
             <ProjectCard key={project.id} project={project} />
           ))}

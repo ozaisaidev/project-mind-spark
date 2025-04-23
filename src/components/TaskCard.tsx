@@ -1,25 +1,24 @@
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Clock } from "lucide-react"
 import { TaskDetailDialog } from "./TaskDetailDialog"
 
-// Mouse-glow animation helper
-function useFollowMouse(selector: string) {
+// New Mouse-bar animation helper (metallic light streak)
+function useBarMouseEffect(ref: React.RefObject<HTMLDivElement>) {
   useEffect(() => {
-    const cards = document.querySelectorAll(selector);
-    function handleMouse(e: MouseEvent) {
-      cards.forEach((card) => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        (card as HTMLElement).style.setProperty("--mouse-x", `${x}px`);
-        (card as HTMLElement).style.setProperty("--mouse-y", `${y}px`);
-      });
+    const el = ref.current;
+    if (!el) return;
+
+    function handle(e: MouseEvent) {
+      const rect = el.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      // Update CSS var for a horizontal translucent band following mouse
+      el.style.setProperty("--bar-x", `${x}px`);
     }
-    window.addEventListener("mousemove", handleMouse);
-    return () => window.removeEventListener("mousemove", handleMouse);
-  }, [selector]);
+    el.addEventListener("mousemove", handle);
+    return () => el.removeEventListener("mousemove", handle);
+  }, [ref]);
 }
 
 interface TaskCardProps {
@@ -32,7 +31,8 @@ interface TaskCardProps {
 
 export function TaskCard({ title, description, status, eta, startedAt }: TaskCardProps) {
   const [showDetail, setShowDetail] = useState(false)
-  useFollowMouse('.mouse-glow-card');
+  const cardRef = useRef<HTMLDivElement>(null);
+  useBarMouseEffect(cardRef);
 
   // If startedAt exists, show elapsed time line
   const [now, setNow] = useState(Date.now());
@@ -54,14 +54,38 @@ export function TaskCard({ title, description, status, eta, startedAt }: TaskCar
   return (
     <>
       <Card 
-        className="w-full transition-all duration-300 ease-in-out hover:shadow-lg hover:translate-y-[-2px] bg-[#F1F0FB] border-zinc-200 cursor-pointer group mouse-glow-card"
+        ref={cardRef}
+        className={`
+          w-full transition-all duration-200 ease-out cursor-pointer group relative z-10
+          bg-[rgba(246,247,250,0.95)]
+          border border-dotted border-zinc-300
+          before:pointer-events-none before:absolute before:inset-0
+          before:rounded-2xl before:z-10
+          hover:before:opacity-100
+          hover:scale-[1.03]
+          hover:z-30
+          shadow-md
+          `}
         style={{
-          background: "radial-gradient(500px circle at var(--mouse-x,50%) var(--mouse-y,50%), rgba(241,240,251,0.9) 0%,rgba(200,200,210,0.7) 80%,rgba(241,240,251,0.7) 100%)",
-          // Slight soft shadow
-          boxShadow: "0 2px 12px 0 rgba(32,32,64,0.09)"
+          background: "rgba(246,247,250,0.99)", // subtle off-white
+          // Glass style & bar light (on hover with CSS var)
+          boxShadow: "0 4px 24px 0 rgba(190,194,210,0.10)",
+          overflow: "hidden",
         }}
         onClick={() => setShowDetail(true)}
       >
+        {/* Light streak/bar as a pseudo-element */}
+        <div
+          className="pointer-events-none absolute left-0 top-0 w-full h-full z-20"
+          style={{
+            mixBlendMode: "screen",
+            // Bar effect: follows mouse X
+            background: "linear-gradient(90deg, transparent 0%, white 12%, rgba(230,230,255,0.65) 36%, white 70%, transparent 100%)",
+            opacity: 0.20,
+            transform: "translateX(calc(var(--bar-x, 90px) - 90px))",
+            transition: "transform 0.13s cubic-bezier(0.64,0.01,0.4,1)"
+          }}
+        />
         <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
           <div className="flex flex-col space-y-1.5">
             <CardTitle className="text-base font-mono text-zinc-800">
@@ -92,8 +116,9 @@ export function TaskCard({ title, description, status, eta, startedAt }: TaskCar
             </p>
           </CardContent>
         )}
+        {/* Subtle white border on hover (animation) */}
+        <div className="pointer-events-none absolute inset-0 rounded-2xl border-2 border-white transition-all duration-200 opacity-0 group-hover:opacity-50 z-30"></div>
       </Card>
-      
       <TaskDetailDialog
         isOpen={showDetail}
         onClose={() => setShowDetail(false)}
@@ -102,3 +127,4 @@ export function TaskCard({ title, description, status, eta, startedAt }: TaskCar
     </>
   )
 }
+
