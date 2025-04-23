@@ -7,29 +7,55 @@ import { cn } from "@/lib/utils"
 interface TodoItemProps {
   todo: Todo;
   onToggle: (id: string, completed: boolean) => void;
+  animateRedGlow?: boolean;
+  animateGreenGlowAndSlide?: boolean;
 }
 
-export function TodoItem({ todo, onToggle }: TodoItemProps) {
+export function TodoItem({ todo, onToggle, animateRedGlow, animateGreenGlowAndSlide }: TodoItemProps) {
+  // --- Temporary local glow/slide state to cooperate w/ parent animation logic ---
   const [isSliding, setIsSliding] = useState(false);
+
+  // Green Glow and Slide: when triggered, do both in proper order
+  useEffect(() => {
+    if (animateGreenGlowAndSlide) {
+      setIsSliding(false); // reset slide
+      // Start: show green glow border, then after a bit, slide out
+      // Glow: 0-850ms (~0.9s), Slide: trigger at glow=done
+      const glowTimeout = setTimeout(() => {
+        setIsSliding(true);
+      }, 900);
+      // Slide lasts 0.5s (must match removal in parent)
+      return () => clearTimeout(glowTimeout);
+    } else {
+      setIsSliding(false);
+    }
+  }, [animateGreenGlowAndSlide]);
+
+  // Animation classes
+  const glowClass = animateGreenGlowAndSlide
+    ? "animate-glow-green border-[#63f240]/90"
+    : animateRedGlow
+      ? "animate-glow border-red-500/90"
+      : todo.completed
+        ? "border-red-500/50"
+        : "";
+
+  const slideClass = animateGreenGlowAndSlide && isSliding ? "animate-slide-right" : "";
 
   const handleToggle = () => {
     if (!todo.completed) {
-      onToggle(todo.id, true);
+      onToggle(todo.id, true); // triggers green animation flow on parent
     } else {
-      setIsSliding(true);
-      // Wait for animations to complete before toggling
-      setTimeout(() => {
-        onToggle(todo.id, false);
-        setIsSliding(false);
-      }, 1500); // Wait for glow (1s) + slide (0.5s)
+      // Uncomplete, use red glow/slide for distinction (legacy effect)
+      onToggle(todo.id, false);
     }
   };
 
   return (
     <div className={cn(
-      "flex items-center justify-between p-4 bg-zinc-900 rounded-lg mb-3 border border-zinc-800 transition-all duration-500 animate-card-entrance",
-      todo.completed && "animate-glow border-red-500/50",
-      isSliding && "animate-slide-right"
+      "flex items-center justify-between p-4 bg-zinc-900/80 rounded-xl mb-3 border border-zinc-800 transition-all duration-500 animate-card-entrance shadow-lg backdrop-blur-md",
+      glowClass,
+      slideClass
     )}>
       <div className="flex items-center space-x-3 flex-1">
         <Checkbox 
