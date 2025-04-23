@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { LogIn, Eye, EyeOff, User } from "lucide-react";
+import { LogIn, Eye, EyeOff } from "lucide-react";
 import clsx from "clsx";
 
 // Animation for successful login (scale + green glow)
@@ -134,7 +134,7 @@ export default function Login() {
                 className="border border-[#444] bg-transparent focus:ring-0"
                 id="rememberMe"
               />
-              <span htmlFor="rememberMe" className="ml-1 cursor-pointer">
+              <span className="ml-1 cursor-pointer">
                 Remember me
               </span>
             </label>
