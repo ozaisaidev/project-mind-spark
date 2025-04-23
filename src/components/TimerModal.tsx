@@ -4,7 +4,6 @@ import { Button } from "./ui/button";
 import { AlarmClock } from "lucide-react";
 import { Slider } from "./ui/slider";
 
-// Reduce scroll sensitivity: track wheel delta and only increment/decrement every ~55 units (typical Apple/Win mouse/trackpad = 100 units per tick on fast scroll, ~50 per slow/trackpad).
 const WHEEL_SENS = 55;
 
 interface TimerModalProps {
@@ -23,11 +22,9 @@ export function TimerModal({ isOpen, onClose, onTimerStart, onTimerReset }: Time
   const [isDone, setIsDone] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   
-  // For scroll throttle
   const hoursWheel = useRef(0)
   const minutesWheel = useRef(0)
   const secondsWheel = useRef(0)
-  // Refs for number pickers
   const hoursRef = useRef<HTMLDivElement>(null);
   const minutesRef = useRef<HTMLDivElement>(null);
   const secondsRef = useRef<HTMLDivElement>(null);
@@ -52,11 +49,9 @@ export function TimerModal({ isOpen, onClose, onTimerStart, onTimerReset }: Time
             setIsDone(true);
             setRunning(false);
             if (intervalRef.current) clearInterval(intervalRef.current);
-            // Browser notification
             if (window.Notification && Notification.permission === "granted") {
               new Notification("Time's up!", { body: "Your timer finished." });
             }
-            // Dispatch reset event to TimerButton
             if (onTimerReset) onTimerReset();
             return 0;
           }
@@ -69,7 +64,6 @@ export function TimerModal({ isOpen, onClose, onTimerStart, onTimerReset }: Time
     };
   }, [running, remaining, onTimerReset]);
 
-  // Request notification permission if not already granted
   useEffect(() => {
     if (isOpen && window.Notification && Notification.permission === "default") {
       Notification.requestPermission();
@@ -88,7 +82,6 @@ export function TimerModal({ isOpen, onClose, onTimerStart, onTimerReset }: Time
       setRunning(true);
       setIsDone(false);
       if (onTimerStart) onTimerStart(total);
-      // Immediately close on start for pill display
       onClose();
     }
   };
@@ -104,7 +97,6 @@ export function TimerModal({ isOpen, onClose, onTimerStart, onTimerReset }: Time
     if (onTimerReset) onTimerReset();
   };
 
-  // Generate picker items
   const generatePickerItems = (max: number) => {
     return Array.from({ length: max + 1 }, (_, i) => i);
   };
@@ -130,7 +122,7 @@ export function TimerModal({ isOpen, onClose, onTimerStart, onTimerReset }: Time
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
-        className="p-0 bg-zinc-950/90 backdrop-blur-md rounded-3xl shadow-2xl border-none max-w-xs flex flex-col items-center"
+        className="p-0 bg-white/5 backdrop-blur-2xl shadow-2xl rounded-3xl border-none max-w-xs flex flex-col items-center glass-morphism"
       >
         <DialogTitle className="sr-only">Set Timer</DialogTitle>
         <div className="w-full flex flex-col items-center py-8 px-6">
@@ -138,7 +130,6 @@ export function TimerModal({ isOpen, onClose, onTimerStart, onTimerReset }: Time
           <div className="text-lg font-bold font-mono text-white mb-6">Set Timer</div>
           
           <div className="flex space-x-2 items-center mb-6 relative">
-            {/* Hours Picker */}
             <div 
               className="w-14 h-14 overflow-hidden rounded-lg bg-zinc-800/70 relative flex items-center justify-center"
               onWheel={handleWheel("h")}
@@ -150,7 +141,6 @@ export function TimerModal({ isOpen, onClose, onTimerStart, onTimerReset }: Time
             
             <span className="text-white font-mono text-2xl">:</span>
             
-            {/* Minutes Picker */}
             <div 
               className="w-14 h-14 overflow-hidden rounded-lg bg-zinc-800/70 relative flex items-center justify-center"
               onWheel={handleWheel("m")}
@@ -162,7 +152,6 @@ export function TimerModal({ isOpen, onClose, onTimerStart, onTimerReset }: Time
             
             <span className="text-white font-mono text-2xl">:</span>
             
-            {/* Seconds Picker */}
             <div 
               className="w-14 h-14 overflow-hidden rounded-lg bg-zinc-800/70 relative flex items-center justify-center"
               onWheel={handleWheel("s")}

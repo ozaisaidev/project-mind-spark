@@ -20,9 +20,9 @@ export function MouseOrb() {
 
     let running = true;
     function animate() {
-      // Interpolate toward mouse
-      orbX += (mouseX - orbX) * 0.14;
-      orbY += (mouseY - orbY) * 0.14;
+      // Interpolate toward mouse with slightly more speed (0.19 was 0.14)
+      orbX += (mouseX - orbX) * 0.19;
+      orbY += (mouseY - orbY) * 0.19;
       if (orb) {
         orb.style.transform = `translate(-50%, -50%) translate(${orbX}px, ${orbY}px)`;
       }
@@ -43,12 +43,11 @@ export function MouseOrb() {
       ref={orbRef}
       className="
         fixed top-0 left-0 z-40 pointer-events-none
-        w-32 h-32 max-w-xs max-h-xs
+        w-24 h-24 max-w-xs max-h-xs
         rounded-full
         backdrop-blur-2xl
-        border border-white/15
-        bg-white/10
-        shadow-[0_4px_24px_2px_rgba(100,100,119,0.08)]
+        bg-white/5
+        shadow-[0_4px_32px_3px_rgba(100,100,119,0.08)]
         transition-all
         will-change-transform
       "

@@ -56,10 +56,10 @@ export function TimerButton() {
 
   return (
     <>
-      <div className="glass shadow-2xl border border-white/20 rounded-2xl p-2">
+      <div className="bg-white/5 backdrop-blur-lg rounded-2xl shadow-lg p-2"> {/* glassmorphic, no border */}
         <Button
           variant="outline"
-          className="rounded-full w-16 h-16 bg-white/20 hover:bg-white/30 backdrop-blur-sm flex items-center justify-center p-0 border-0 shadow-lg"
+          className="relative rounded-full w-16 h-16 bg-white/10 hover:bg-white/20 backdrop-blur-xl flex items-center justify-center p-0 border-0 shadow-xl glass-morphism"
           onClick={() => setModalOpen(true)}
           disabled={timerActive}
           style={{ transition: "box-shadow .3s" }}
