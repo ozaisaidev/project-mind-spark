@@ -1,4 +1,3 @@
-
 export interface Task {
   id: string;
   title: string;
@@ -22,4 +21,5 @@ export interface Todo {
   completed: boolean;
   date?: string;
   progress?: number;
+  category?: "daily" | "weekly" | "monthly" | "general";
 }

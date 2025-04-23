@@ -1,3 +1,4 @@
+
 import { useState } from "react"
 import { TodoItem } from "@/components/TodoItem"
 import { Button } from "@/components/ui/button"
@@ -7,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input"
 import { v4 as uuidv4 } from 'uuid'
 import { Todo } from "@/types"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 // Demo todos
 const DEMO_TODOS: Todo[] = [
@@ -14,26 +16,45 @@ const DEMO_TODOS: Todo[] = [
     id: "1",
     title: "Finish report",
     completed: false,
-    date: "Today"
+    date: "Today",
+    category: "daily",
   },
   {
     id: "2",
     title: "Call Alex",
     completed: false,
-    date: "Tues, May 7 • 2:00 PM"
+    date: "Tues, May 7 • 2:00 PM",
+    category: "weekly",
   },
   {
     id: "3",
     title: "Review design mockups",
     completed: true,
-    date: "Yesterday"
+    date: "Yesterday",
+    category: "monthly",
+  },
+  {
+    id: "4",
+    title: "Workout at gym",
+    completed: false,
+    date: "Today",
+    category: "general",
   },
 ]
+
+const CATEGORIES = [
+  { key: "all", label: "All" },
+  { key: "daily", label: "Daily" },
+  { key: "weekly", label: "Weekly" },
+  { key: "monthly", label: "Monthly" },
+  { key: "general", label: "General" },
+];
 
 export default function Todos() {
   const [todos, setTodos] = useState<Todo[]>(DEMO_TODOS);
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [newTodo, setNewTodo] = useState({ title: "" });
+  const [newTodo, setNewTodo] = useState({ title: "", category: "daily" });
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
   const handleAddTodo = (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,9 +62,10 @@ export default function Todos() {
       id: uuidv4(),
       title: newTodo.title,
       completed: false,
+      category: newTodo.category as "daily" | "weekly" | "monthly" | "general",
     };
     setTodos([...todos, todo]);
-    setNewTodo({ title: "" });
+    setNewTodo({ title: "", category: "daily" });
     setIsFormOpen(false);
   };
 
@@ -54,6 +76,11 @@ export default function Todos() {
       )
     );
   };
+
+  // Filter todos by selected category
+  const filteredTodos = selectedCategory === "all"
+    ? todos
+    : todos.filter(todo => todo.category === selectedCategory);
 
   return (
     <div className="min-h-screen bg-zinc-900">
@@ -76,8 +103,25 @@ export default function Todos() {
           </div>
         </div>
         
+        {/* Tabs for category selection */}
+        <div className="max-w-2xl mx-auto mb-6">
+          <Tabs value={selectedCategory} onValueChange={setSelectedCategory}>
+            <TabsList className="w-full flex justify-between gap-2 bg-zinc-800/60 border border-zinc-700">
+              {CATEGORIES.map(category => (
+                <TabsTrigger
+                  key={category.key}
+                  value={category.key}
+                  className="flex-1 text-xs font-mono data-[state=active]:bg-zinc-900 data-[state=active]:text-red-500 rounded px-2 py-1 transition-colors"
+                >
+                  {category.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
+        </div>
+
         <div className="max-w-2xl mx-auto">
-          {todos.map((todo) => (
+          {filteredTodos.map((todo) => (
             <TodoItem key={todo.id} todo={todo} onToggle={handleToggle} />
           ))}
         </div>
@@ -107,6 +151,16 @@ export default function Todos() {
                   onChange={(e) => setNewTodo({...newTodo, title: e.target.value})}
                   className="bg-zinc-800/50 border-zinc-700 text-white font-mono placeholder:text-zinc-500 text-sm tracking-wider"
                 />
+                <select
+                  value={newTodo.category}
+                  onChange={e => setNewTodo({...newTodo, category: e.target.value})}
+                  className="w-full bg-zinc-800/50 border-zinc-700 text-white font-mono text-xs rounded px-3 py-2"
+                >
+                  <option value="daily">Daily</option>
+                  <option value="weekly">Weekly</option>
+                  <option value="monthly">Monthly</option>
+                  <option value="general">General</option>
+                </select>
               </div>
               
               <div className="flex justify-end space-x-2 pt-4">
