@@ -16,22 +16,22 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#231733] to-zinc-900">
-      <Card className="w-[370px] shadow-lg bg-[#1A1F2C] border-none">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#2E3137] to-[#222228]">
+      <Card className="w-[370px] shadow-lg bg-[#232528] border-none">
         <CardHeader>
-          <CardTitle className="flex items-center justify-center gap-2 text-2xl text-white">
-            <LogIn size={28} />
+          <CardTitle className="flex items-center justify-center gap-2 text-2xl text-white font-mono">
+            <LogIn size={28} className="text-ocean-blue-500" />
             Sign in
           </CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4 mt-2">
             <div>
-              <label className="block text-zinc-300 text-sm font-mono mb-1" htmlFor="email">
+              <label className="block text-gray-300 text-sm font-mono mb-1" htmlFor="email">
                 Email
               </label>
-              <div className="flex items-center bg-[#222235] rounded-md px-2">
-                <User className="w-4 h-4 text-zinc-400" />
+              <div className="flex items-center bg-[#26282E] rounded-md px-2">
+                <User className="w-4 h-4 text-gray-400" />
                 <Input
                   id="email"
                   type="email"
@@ -39,37 +39,37 @@ export default function Login() {
                   placeholder="your@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="bg-transparent text-white border-none focus-visible:ring-0 focus-visible:border-[#9b87f5] ml-2"
+                  className="bg-transparent text-white border-none focus-visible:ring-0 focus-visible:border-[#0EA5E9] ml-2 font-mono"
                   required
                 />
               </div>
             </div>
             <div>
-              <label className="block text-zinc-300 text-sm font-mono mb-1" htmlFor="password">
+              <label className="block text-gray-300 text-sm font-mono mb-1" htmlFor="password">
                 Password
               </label>
-              <div className="flex items-center bg-[#222235] rounded-md px-2">
-                <Lock className="w-4 h-4 text-zinc-400" />
+              <div className="flex items-center bg-[#26282E] rounded-md px-2">
+                <Lock className="w-4 h-4 text-gray-400" />
                 <Input
                   id="password"
                   type="password"
                   placeholder="********"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="bg-transparent text-white border-none focus-visible:ring-0 focus-visible:border-[#9b87f5] ml-2"
+                  className="bg-transparent text-white border-none focus-visible:ring-0 focus-visible:border-[#0EA5E9] ml-2 font-mono"
                   required
                 />
               </div>
             </div>
             <Button
               type="submit"
-              className="w-full mt-2 bg-[#9b87f5] hover:bg-[#7E69AB] text-white text-base rounded-md"
+              className="w-full mt-2 bg-[#0EA5E9] hover:bg-[#1EAEDB] text-white text-base rounded-md font-mono"
             >
               <LogIn className="w-4 h-4 mr-2" />
               Login
             </Button>
           </form>
-          <div className="text-center mt-6 text-xs text-zinc-400 font-mono">
+          <div className="text-center mt-6 text-xs text-gray-400 font-mono">
             <span>Demo only. Connect authentication for real login.</span>
           </div>
         </CardContent>

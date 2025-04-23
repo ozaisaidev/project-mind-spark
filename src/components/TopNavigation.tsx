@@ -1,5 +1,6 @@
 
 import { Link, useLocation } from "react-router-dom"
+import { LogOut } from "lucide-react";
 
 export function TopNavigation() {
   const location = useLocation();
@@ -11,10 +12,15 @@ export function TopNavigation() {
     return location.pathname === path;
   };
 
+  const handleLogout = () => {
+    // Simulate logout, in production you would clear tokens/session etc.
+    window.location.href = "/login";
+  };
+
   return (
     <div className="bg-zinc-900 border-b border-zinc-800 py-4">
-      <div className="container mx-auto px-4">
-        <nav className="flex justify-center">
+      <div className="container mx-auto px-4 flex items-center justify-center relative">
+        <nav className="flex flex-1 justify-center">
           <div className="flex space-x-16">
             <NavLink to="/projects" isActive={isActive('/projects')}>
               Projects
@@ -25,11 +31,15 @@ export function TopNavigation() {
             <NavLink to="/todos" isActive={isActive('/todos')}>
               To-dos
             </NavLink>
-            <NavLink to="/login" isActive={isActive('/login')}>
-              Login
-            </NavLink>
           </div>
         </nav>
+        <button
+          onClick={handleLogout}
+          className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center px-3 py-2 rounded-md hover:bg-zinc-800 transition-colors"
+          aria-label="Logout"
+        >
+          <LogOut className="text-zinc-300 hover:text-orange-400" size={24} />
+        </button>
       </div>
     </div>
   )
@@ -61,3 +71,4 @@ function NavLink({ to, isActive, children }: NavLinkProps) {
     </Link>
   );
 }
+
