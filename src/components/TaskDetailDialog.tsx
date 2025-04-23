@@ -1,6 +1,7 @@
 
+import { useRef, useState } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Clock } from "lucide-react"
+import { Clock, File as FileIcon } from "lucide-react"
 
 interface TaskDetailDialogProps {
   isOpen: boolean
@@ -31,6 +32,20 @@ export function TaskDetailDialog({ isOpen, onClose, task }: TaskDetailDialogProp
       );
     }
     return dots;
+  };
+
+  // NEW: Document upload
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [file, setFile] = useState<File | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setFile(e.target.files[0]);
+    }
+  };
+
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
   };
 
   return (
@@ -66,8 +81,36 @@ export function TaskDetailDialog({ isOpen, onClose, task }: TaskDetailDialogProp
               </p>
             </div>
           )}
+
+          {/* File upload section */}
+          <div className="pt-2">
+            <label className="block text-zinc-400 text-xs mb-1 font-mono">Attach a document (optional):</label>
+            <div className="flex items-center gap-3">
+              <button 
+                type="button"
+                className="flex items-center gap-2 rounded-md border border-zinc-700 bg-zinc-800 px-3 py-1.5 hover:bg-zinc-700 text-sm text-white font-mono transition-colors"
+                onClick={handleUploadClick}
+              >
+                <FileIcon className="w-4 h-4" />
+                {file ? "Change file" : "Upload file"}
+              </button>
+              <input
+                type="file"
+                className="hidden"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+              />
+              {file && (
+                <span className="text-xs text-zinc-300 font-mono truncate max-w-[150px]">{file.name}</span>
+              )}
+            </div>
+            <p className="text-[11px] text-zinc-500 mt-1">
+              You can upload any file type. (This is a demo—file is not saved.)
+            </p>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
   )
 }
+
