@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react"
 import { TodoItem } from "@/components/TodoItem"
 import { Button } from "@/components/ui/button"
@@ -10,7 +9,6 @@ import { v4 as uuidv4 } from 'uuid'
 import { Todo } from "@/types"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
-// Demo todos
 const DEMO_TODOS: Todo[] = [
   {
     id: "1",
@@ -55,27 +53,24 @@ export default function Todos() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [newTodo, setNewTodo] = useState({ title: "", category: "daily" });
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [redGlowIndices, setRedGlowIndices] = useState<number[]>([]);
 
-  // --- Animation state for animating cards on category change ---
-  const [animateIndices, setAnimateIndices] = useState<number[]>([]);
   useEffect(() => {
-    // On category change, animate each card in sequence
-    setAnimateIndices([]);
+    setRedGlowIndices([]);
     if (filteredTodos.length > 0) {
       let index = 0;
       function animateNext() {
-        setAnimateIndices((prev) => [...prev, index]);
+        setRedGlowIndices((prev) => [...prev, index]);
         index++;
         if (index < filteredTodos.length) {
-          setTimeout(animateNext, 110); // slight overlap for fast feel
+          setTimeout(animateNext, 120);
+        } else {
+          setTimeout(() => setRedGlowIndices([]), 800);
         }
       }
       animateNext();
     }
-    // eslint-disable-next-line
-    // depend on selectedCategory and todos (so it re-triggers on add/delete/complete in filtered view)
   }, [selectedCategory, todos.length]);
-  // ----------------------------------------------------------
 
   const handleAddTodo = (e: React.FormEvent) => {
     e.preventDefault();
@@ -90,14 +85,11 @@ export default function Todos() {
     setIsFormOpen(false);
   };
 
-  // --- Track which task is being animated as complete for green glow/slide ---
   const [taskCompleting, setTaskCompleting] = useState<{[id: string]: boolean}>({});
 
-  // When a todo is completed, trigger the green animation and after animation, update its state
   const handleToggle = (id: string, completed: boolean) => {
     if (completed) {
       setTaskCompleting((t) => ({ ...t, [id]: true }));
-      // Animation duration: green glow (0.9s) + slide out (0.55s = ~1.45s)
       setTimeout(() => {
         setTodos(
           todos.map((todo) => 
@@ -107,7 +99,6 @@ export default function Todos() {
         setTaskCompleting((t) => ({ ...t, [id]: false }));
       }, 1400);
     } else {
-      // Uncomplete is instant, with red animation
       setTodos(
         todos.map((todo) => 
           todo.id === id ? { ...todo, completed } : todo
@@ -116,7 +107,6 @@ export default function Todos() {
     }
   };
 
-  // Filter todos by selected category
   const filteredTodos = selectedCategory === "all"
     ? todos
     : todos.filter(todo => todo.category === selectedCategory);
@@ -142,7 +132,6 @@ export default function Todos() {
           </div>
         </div>
         
-        {/* Tabs for category selection */}
         <div className="max-w-2xl mx-auto mb-6">
           <Tabs value={selectedCategory} onValueChange={setSelectedCategory}>
             <TabsList className="w-full flex justify-between gap-2 bg-zinc-800/60 border border-zinc-700">
@@ -165,7 +154,7 @@ export default function Todos() {
               key={todo.id}
               todo={todo}
               onToggle={handleToggle}
-              animateRedGlow={animateIndices.includes(idx) && !todo.completed && !taskCompleting[todo.id]}
+              animateRedGlow={redGlowIndices.includes(idx) && !todo.completed && !taskCompleting[todo.id]}
               animateGreenGlowAndSlide={!!taskCompleting[todo.id]}
             />
           ))}
