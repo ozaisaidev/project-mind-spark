@@ -99,3 +99,9 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .bg-main-gradient {
+    background: linear-gradient(135deg, #201837 0%, #332D50 60%, #26294A 100%);
+  }
+}

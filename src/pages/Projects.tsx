@@ -1,4 +1,3 @@
-
 import { useState } from "react"
 import { ProjectCard } from "@/components/ProjectCard"
 import { Project } from "@/types"
@@ -50,7 +49,7 @@ export default function Projects() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-900">
+    <div className="min-h-screen bg-main-gradient">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <Link 
@@ -134,4 +133,3 @@ export default function Projects() {
     </div>
   )
 }
-
