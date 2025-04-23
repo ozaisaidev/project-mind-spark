@@ -4,29 +4,12 @@ import { useEffect, useState, useRef } from "react";
 import { Button } from "./ui/button";
 import { TimerModal } from "./TimerModal";
 
-/** Simple beep on completion */
-function playBeep() {
-  const oscCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
-  const osc = oscCtx.createOscillator();
-  const gain = oscCtx.createGain();
-  osc.type = 'sine';
-  osc.frequency.value = 960;
-  gain.gain.value = 0.16;
-  osc.connect(gain);
-  gain.connect(oscCtx.destination);
-  osc.start();
-  setTimeout(() => {
-    gain.gain.exponentialRampToValueAtTime(0.00001, oscCtx.currentTime + 0.38);
-    osc.stop(oscCtx.currentTime + 0.4);
-    setTimeout(() => oscCtx.close(), 340);
-  }, 348);
-}
-
 export function TimerButton() {
   const [modalOpen, setModalOpen] = useState(false);
   const [timerActive, setTimerActive] = useState(false);
   const [remaining, setRemaining] = useState(0);
   const [tick, setTick] = useState(false);
+  const [flash, setFlash] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
@@ -56,8 +39,8 @@ export function TimerButton() {
     }
     if (remaining === 0 && timerActive) {
       setTimerActive(false);
+      // Flash the screen for 0.38s
       window.dispatchEvent(new Event('timer:screenFlash'));
-      playBeep();
     }
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
@@ -74,38 +57,48 @@ export function TimerButton() {
 
   return (
     <>
-      {!timerActive ? (
-        <Button
-          variant="outline"
-          className="rounded-full w-16 h-16 bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center p-0 border-0 shadow-lg transition-all"
-          onClick={() => setModalOpen(true)}
-          style={{ position: "relative" }}
-        >
+      <Button
+        variant="outline"
+        className="rounded-full w-16 h-16 bg-white/20 hover:bg-white/30 backdrop-blur-sm flex items-center justify-center p-0 border-0 shadow-lg"
+        onClick={() => setModalOpen(true)}
+        disabled={timerActive}
+        style={{ transition: "box-shadow .3s" }}
+      >
+        {timerActive ? (
+          <span
+            className={`
+              absolute 
+              left-1/2 
+              bottom-full 
+              mb-2 
+              animate-pulse-timer
+              z-10
+            `}
+            aria-live="polite"
+            style={{
+              transform: "translateX(-50%)",
+              minWidth: 104,
+              borderRadius: "9999px",
+              background: "#a50e14e6",
+              color: "#ababab",
+              fontFamily: "monospace",
+              fontWeight: 700,
+              fontSize: 20,
+              padding: "8px 34px",
+              textAlign: "center",
+              border: "0px solid #fff",
+              boxShadow: "0 0 24px 3px #a50e1444, 0 0 24px 3px #a50e1477",
+              animation: tick ? "pulse 0.8s" : undefined,
+              transition: "box-shadow .19s, background .27s",
+              opacity: 1
+            }}
+          >
+            {format(remaining)}
+          </span>
+        ) : (
           <AlarmClock className="w-8 h-8 text-red-500" />
-        </Button>
-      ) : (
-        <button
-          className={`
-            rounded-full relative w-24 h-[52px] flex items-center justify-center bg-[#a50e14e6]
-            shadow-[0_0_24px_3px_#a50e1444,0_0_24px_3px_#a50e1477] font-mono font-bold
-            text-lg text-[#FAFAFA] border-0 cursor-pointer animate-glow select-none
-            transition-all
-          `}
-          style={{
-            minWidth: 104,
-            borderRadius: "9999px",
-            boxShadow: "0 0 24px 3px #a50e1444, 0 0 24px 3px #a50e1477",
-            padding: "8px 34px",
-            animation: tick ? "pulse 0.8s" : undefined,
-            opacity: 1,
-            outline: "none"
-          }}
-          aria-label="Countdown Timer (click to manage)"
-          onClick={() => setModalOpen(true)}
-        >
-          {format(remaining)}
-        </button>
-      )}
+        )}
+      </Button>
       <TimerModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}

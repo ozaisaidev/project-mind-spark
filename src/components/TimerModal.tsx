@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "./ui/button";
 import { AlarmClock } from "lucide-react";
-// ... keep existing code (imports/Slider/WHEEL_SENS) ...
 import { Slider } from "./ui/slider";
 
 // Reduce scroll sensitivity: track wheel delta and only increment/decrement every ~55 units (typical Apple/Win mouse/trackpad = 100 units per tick on fast scroll, ~50 per slow/trackpad).
@@ -23,8 +22,6 @@ export function TimerModal({ isOpen, onClose, onTimerStart, onTimerReset }: Time
   const [remaining, setRemaining] = useState(0);
   const [isDone, setIsDone] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  // Save resume state for pause feature
-  const [paused, setPaused] = useState(false);
   
   // For scroll throttle
   const hoursWheel = useRef(0)
@@ -48,7 +45,7 @@ export function TimerModal({ isOpen, onClose, onTimerStart, onTimerReset }: Time
   }, [isOpen]);
 
   useEffect(() => {
-    if (running && remaining > 0 && !paused) {
+    if (running && remaining > 0) {
       intervalRef.current = setInterval(() => {
         setRemaining(prev => {
           if (prev <= 1) {
@@ -70,9 +67,8 @@ export function TimerModal({ isOpen, onClose, onTimerStart, onTimerReset }: Time
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [running, remaining, paused, onTimerReset]);
+  }, [running, remaining, onTimerReset]);
 
-  // ... keep existing code (notification permission) ...
   // Request notification permission if not already granted
   useEffect(() => {
     if (isOpen && window.Notification && Notification.permission === "default") {
@@ -91,7 +87,6 @@ export function TimerModal({ isOpen, onClose, onTimerStart, onTimerReset }: Time
       setRemaining(total);
       setRunning(true);
       setIsDone(false);
-      setPaused(false);
       if (onTimerStart) onTimerStart(total);
       // Immediately close on start for pill display
       onClose();
@@ -105,17 +100,10 @@ export function TimerModal({ isOpen, onClose, onTimerStart, onTimerReset }: Time
     setHours(0);
     setMinutes(0);
     setSeconds(0);
-    setPaused(false);
     if (intervalRef.current) clearInterval(intervalRef.current);
     if (onTimerReset) onTimerReset();
   };
 
-  // Add pause/resume if running
-  const pauseResume = () => {
-    setPaused(p => !p);
-  };
-
-  // ... keep existing code (generate picker items, handleWheel, etc) ...
   // Generate picker items
   const generatePickerItems = (max: number) => {
     return Array.from({ length: max + 1 }, (_, i) => i);
@@ -150,7 +138,6 @@ export function TimerModal({ isOpen, onClose, onTimerStart, onTimerReset }: Time
           <div className="text-lg font-bold font-mono text-white mb-6">Set Timer</div>
           
           <div className="flex space-x-2 items-center mb-6 relative">
-            {/* ... keep existing code for pickers ... */}
             {/* Hours Picker */}
             <div 
               className="w-14 h-14 overflow-hidden rounded-lg bg-zinc-800/70 relative flex items-center justify-center"
@@ -185,12 +172,15 @@ export function TimerModal({ isOpen, onClose, onTimerStart, onTimerReset }: Time
               <div className="text-white font-mono text-2xl">{seconds.toString().padStart(2, "0")}</div>
             </div>
           </div>
+          
           <div className="text-xs text-zinc-400 mb-4 font-mono italic">
             Scroll to set time
           </div>
+          
           <div className="mb-4 font-mono text-lg text-white">
-            {running && `${String(Math.floor(remaining/3600)).padStart(2,"0")}:${String(Math.floor((remaining%3600)/60)).padStart(2,"0")}:${String(remaining%60).padStart(2,"0")}`}
+            {running && `${hours.toString().padStart(2,"0")}:${minutes.toString().padStart(2,"0")}:${seconds.toString().padStart(2,"0")}`}
           </div>
+          
           {isDone ? (
             <div className="w-full flex flex-col items-center">
               <div className="text-red-500 text-md font-bold font-mono mb-2 animate-pulse">
@@ -201,19 +191,6 @@ export function TimerModal({ isOpen, onClose, onTimerStart, onTimerReset }: Time
                 onClick={reset}
               >
                 Reset
-              </Button>
-            </div>
-          ) : running || remaining > 0 ? (
-            // (NEW) Show Pause/Resume and Reset when active
-            <div className="flex gap-2 w-full">
-              <Button onClick={pauseResume} className="flex-1 bg-orange-500 hover:bg-orange-600 text-white">
-                {paused ? "Resume" : "Pause"}
-              </Button>
-              <Button onClick={reset} className="flex-1 bg-zinc-600 text-white">
-                Reset
-              </Button>
-              <Button onClick={onClose} className="flex-1 bg-zinc-700 text-white">
-                Close
               </Button>
             </div>
           ) : (
