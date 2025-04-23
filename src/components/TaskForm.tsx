@@ -37,7 +37,7 @@ export function TaskForm({ isOpen, onClose, onSubmit, projectId }: TaskFormProps
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-zinc-900/95 border-zinc-800 font-mono max-w-lg mx-auto">
+      <DialogContent className="bg-white/10 backdrop-blur-lg border border-white/20 shadow-2xl rounded-2xl font-mono max-w-lg mx-auto glass-morphism">
         <DialogHeader>
           <DialogTitle className="text-white text-xl tracking-tight">
             new task
@@ -72,7 +72,7 @@ export function TaskForm({ isOpen, onClose, onSubmit, projectId }: TaskFormProps
             </div>
           </div>
           
-          <div className="border-2 border-dashed border-zinc-700 rounded-lg p-6 flex flex-col items-center justify-center">
+          <div className="border-2 border-dashed border-zinc-700 rounded-lg p-6 flex flex-col items-center justify-center bg-white/5 backdrop-blur">
             <label htmlFor="file-upload" className="cursor-pointer flex flex-col items-center">
               <File className="w-12 h-12 text-zinc-400 mb-2" />
               <span className="text-white text-center mb-1">Drop any document here</span>
@@ -111,3 +111,4 @@ export function TaskForm({ isOpen, onClose, onSubmit, projectId }: TaskFormProps
     </Dialog>
   )
 }
+
