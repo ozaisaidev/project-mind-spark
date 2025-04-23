@@ -18,10 +18,10 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
+    <BrowserRouter>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
         <TopNavigation />
         <div>
           <Routes>
@@ -29,7 +29,6 @@ const App = () => (
             <Route path="/projects" element={<Projects />} />
             <Route path="/project/:id" element={<ProjectDetail />} />
             <Route path="/todos" element={<Todos />} />
-            {/* Timer route and MouseTrackerArrow removed */}
             <Route path="*" element={<NotFound />} />
           </Routes>
           {/* Fixed bottom left: Timer */}
@@ -39,8 +38,8 @@ const App = () => (
           <ScreenFlash />
           <MouseOrb />
         </div>
-      </BrowserRouter>
-    </TooltipProvider>
+      </TooltipProvider>
+    </BrowserRouter>
   </QueryClientProvider>
 );
 
