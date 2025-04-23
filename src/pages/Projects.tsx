@@ -50,18 +50,18 @@ export default function Projects() {
   };
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-zinc-900">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <Link 
             to="/" 
-            className="inline-flex items-center text-zinc-400 hover:text-zinc-700 mb-4"
+            className="inline-flex items-center text-zinc-400 hover:text-white mb-4"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             <span className="font-mono">Back</span>
           </Link>
           <div className="space-y-2">
-            <h1 className="text-4xl font-mono font-bold tracking-tight text-zinc-100">
+            <h1 className="text-4xl font-mono font-bold tracking-tight text-white">
               Projects
             </h1>
             <p className="text-lg text-zinc-400 font-mono">
@@ -134,3 +134,4 @@ export default function Projects() {
     </div>
   )
 }
+

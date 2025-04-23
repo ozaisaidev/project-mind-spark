@@ -47,6 +47,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
         bg-[#f5f5f7]/90
         border-2 border-dotted border-zinc-200/60
         hover:z-[40] hover:shadow-2xl
+        animate-card-entrance
         `}
       style={{
         boxShadow: "0 6px 36px 0 rgba(170,173,176,0.10)",
@@ -85,3 +86,4 @@ export function ProjectCard({ project }: ProjectCardProps) {
     </Card>
   )
 }
+
