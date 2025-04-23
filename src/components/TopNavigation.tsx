@@ -25,6 +25,9 @@ export function TopNavigation() {
             <NavLink to="/todos" isActive={isActive('/todos')}>
               To-dos
             </NavLink>
+            <NavLink to="/login" isActive={isActive('/login')}>
+              Login
+            </NavLink>
           </div>
         </nav>
       </div>

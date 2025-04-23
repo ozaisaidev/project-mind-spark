@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -13,6 +12,7 @@ import { TimerButton } from "@/components/TimerButton";
 import { TopNavigation } from "@/components/TopNavigation";
 import { ScreenFlash } from "@/components/ScreenFlash";
 import { MouseOrb } from "@/components/MouseOrb";
+import Login from "./pages/Login";
 
 const queryClient = new QueryClient();
 
@@ -29,9 +29,9 @@ const App = () => (
             <Route path="/projects" element={<Projects />} />
             <Route path="/project/:id" element={<ProjectDetail />} />
             <Route path="/todos" element={<Todos />} />
+            <Route path="/login" element={<Login />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
-          {/* Fixed bottom left: Timer */}
           <div className="fixed bottom-8 left-8 z-50">
             <TimerButton />
           </div>
