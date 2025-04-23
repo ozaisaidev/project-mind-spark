@@ -9,7 +9,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { v4 as uuidv4 } from 'uuid'
-import { TopNavigation } from "@/components/TopNavigation"
 
 const DEMO_PROJECTS: Project[] = [
   {
@@ -52,7 +51,6 @@ export default function Projects() {
 
   return (
     <div className="min-h-screen bg-black">
-      <TopNavigation />
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <Link 

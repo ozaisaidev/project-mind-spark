@@ -9,6 +9,7 @@ export function TimerButton() {
   const [timerActive, setTimerActive] = useState(false);
   const [remaining, setRemaining] = useState(0);
   const [tick, setTick] = useState(false);
+  const [flash, setFlash] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
@@ -38,6 +39,8 @@ export function TimerButton() {
     }
     if (remaining === 0 && timerActive) {
       setTimerActive(false);
+      // Flash the screen for 0.38s
+      window.dispatchEvent(new Event('timer:screenFlash'));
     }
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
@@ -63,14 +66,32 @@ export function TimerButton() {
       >
         {timerActive ? (
           <span
-            className={`transition-all px-5 py-2 bg-red-500 text-white rounded-full font-mono text-lg font-bold tracking-wider flex items-center justify-center shadow-lg
-             ${tick ? "animate-[pulse_0.5s]" : ""}`}
-            style={{
-              minWidth: 90,
-              border: "2px solid #fff",
-              boxShadow: "0 0 0 2px #ef4444, 0 0 12px 2px #ef444460"
-            }}
+            className={`
+              absolute 
+              left-1/2 
+              bottom-full 
+              mb-2 
+              animate-pulse-timer
+              z-10
+            `}
             aria-live="polite"
+            style={{
+              transform: "translateX(-50%)",
+              minWidth: 104,
+              borderRadius: "9999px",
+              background: "#a50e14e6",
+              color: "#ababab",
+              fontFamily: "monospace",
+              fontWeight: 700,
+              fontSize: 20,
+              padding: "8px 34px",
+              textAlign: "center",
+              border: "0px solid #fff",
+              boxShadow: "0 0 24px 3px #a50e1444, 0 0 24px 3px #a50e1477",
+              animation: tick ? "pulse 0.8s" : undefined,
+              transition: "box-shadow .19s, background .27s",
+              opacity: 1
+            }}
           >
             {format(remaining)}
           </span>

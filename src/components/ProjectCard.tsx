@@ -8,14 +8,13 @@ function useWhiteBorderFocusEffect(ref: React.RefObject<HTMLDivElement>) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    // Handle focus/hover: subtle border transition
     function handle(e: MouseEvent) {
-      el.classList.add("border-white");
-      el.classList.remove("border-zinc-300/60");
+      el.classList.add("border-white/80");
+      el.classList.remove("border-zinc-200/60");
     }
     function handleLeave() {
-      el.classList.remove("border-white");
-      el.classList.add("border-zinc-300/60");
+      el.classList.remove("border-white/80");
+      el.classList.add("border-zinc-200/60");
     }
     el.addEventListener("mouseenter", handle);
     el.addEventListener("mouseleave", handleLeave);
@@ -44,18 +43,16 @@ export function ProjectCard({ project }: ProjectCardProps) {
     <Card 
       ref={cardRef}
       className={`
-        w-full transition-all duration-150 cursor-pointer group relative z-10
-        bg-[#f6f7fa]/95
-        border-2 border-dotted border-zinc-300/60
-        hover:z-30 
-        shadow-md
+        w-full transition-all duration-100 cursor-pointer group relative z-10
+        bg-[#f5f5f7]/90
+        border-2 border-dotted border-zinc-200/60
+        hover:z-[40] hover:shadow-2xl
         `}
       style={{
-        background: "rgba(244,245,248,0.96)",
-        boxShadow: "0 6px 36px 0 rgba(170,173,176,0.15)",
+        boxShadow: "0 6px 36px 0 rgba(170,173,176,0.10)",
         overflow: "hidden",
         transform: "none",
-        transition: "box-shadow 0.08s cubic-bezier(.19,1,.22,1), border-color 0.13s",
+        transition: "box-shadow 0.12s cubic-bezier(.19,1,.22,1), border-color 0.17s",
       }}
       onClick={handleClick}
     >
@@ -63,8 +60,8 @@ export function ProjectCard({ project }: ProjectCardProps) {
         className="pointer-events-none absolute left-0 top-0 w-full h-full z-20"
         style={{
           mixBlendMode: "screen",
-          background: "linear-gradient(90deg, transparent 0%, white 10%, rgba(230,230,255,0.08) 36%, white 70%, transparent 100%)",
-          opacity: 0.09,
+          background: "linear-gradient(90deg, transparent 0%, white 8%, rgba(230,230,255,0.05) 36%, white 53%, transparent 100%)",
+          opacity: 0.05,
         }}
       />
       <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
@@ -84,7 +81,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
           </p>
         </CardContent>
       )}
-      <div className="pointer-events-none absolute inset-0 rounded-2xl border-2 border-white transition-all duration-150 opacity-0 group-hover:opacity-30 z-30"></div>
+      <div className="pointer-events-none absolute inset-0 rounded-2xl border-2 border-white transition-all duration-150 opacity-0 group-hover:opacity-25 z-30"></div>
     </Card>
   )
 }
