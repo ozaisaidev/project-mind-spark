@@ -39,7 +39,6 @@ export function TimerButton() {
     }
     if (remaining === 0 && timerActive) {
       setTimerActive(false);
-      // Flash the screen for 0.38s
       window.dispatchEvent(new Event('timer:screenFlash'));
     }
     return () => {
@@ -57,48 +56,50 @@ export function TimerButton() {
 
   return (
     <>
-      <Button
-        variant="outline"
-        className="rounded-full w-16 h-16 bg-white/20 hover:bg-white/30 backdrop-blur-sm flex items-center justify-center p-0 border-0 shadow-lg"
-        onClick={() => setModalOpen(true)}
-        disabled={timerActive}
-        style={{ transition: "box-shadow .3s" }}
-      >
-        {timerActive ? (
-          <span
-            className={`
-              absolute 
-              left-1/2 
-              bottom-full 
-              mb-2 
-              animate-pulse-timer
-              z-10
-            `}
-            aria-live="polite"
-            style={{
-              transform: "translateX(-50%)",
-              minWidth: 104,
-              borderRadius: "9999px",
-              background: "#a50e14e6",
-              color: "#ababab",
-              fontFamily: "monospace",
-              fontWeight: 700,
-              fontSize: 20,
-              padding: "8px 34px",
-              textAlign: "center",
-              border: "0px solid #fff",
-              boxShadow: "0 0 24px 3px #a50e1444, 0 0 24px 3px #a50e1477",
-              animation: tick ? "pulse 0.8s" : undefined,
-              transition: "box-shadow .19s, background .27s",
-              opacity: 1
-            }}
-          >
-            {format(remaining)}
-          </span>
-        ) : (
-          <AlarmClock className="w-8 h-8 text-red-500" />
-        )}
-      </Button>
+      <div className="glass shadow-2xl border border-white/20 rounded-2xl p-2">
+        <Button
+          variant="outline"
+          className="rounded-full w-16 h-16 bg-white/20 hover:bg-white/30 backdrop-blur-sm flex items-center justify-center p-0 border-0 shadow-lg"
+          onClick={() => setModalOpen(true)}
+          disabled={timerActive}
+          style={{ transition: "box-shadow .3s" }}
+        >
+          {timerActive ? (
+            <span
+              className={`
+                absolute 
+                left-1/2 
+                bottom-full 
+                mb-2 
+                animate-pulse-timer
+                z-10
+              `}
+              aria-live="polite"
+              style={{
+                transform: "translateX(-50%)",
+                minWidth: 104,
+                borderRadius: "9999px",
+                background: "#a50e14e6",
+                color: "#ababab",
+                fontFamily: "monospace",
+                fontWeight: 700,
+                fontSize: 20,
+                padding: "8px 34px",
+                textAlign: "center",
+                border: "0px solid #fff",
+                boxShadow: "0 0 24px 3px #a50e1444, 0 0 24px 3px #a50e1477",
+                animation: tick ? "pulse 0.8s" : undefined,
+                transition: "box-shadow .19s, background .27s",
+                opacity: 1
+              }}
+            >
+              {format(remaining)}
+            </span>
+          ) : (
+            <AlarmClock className="w-8 h-8 text-red-500" />
+          )}
+        </Button>
+      </div>
       <TimerModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
