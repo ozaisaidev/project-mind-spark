@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -13,6 +14,7 @@ import { TopNavigation } from "@/components/TopNavigation";
 import { ScreenFlash } from "@/components/ScreenFlash";
 import { MouseOrb } from "@/components/MouseOrb";
 import Login from "./pages/Login";
+import Presentation from "./pages/Presentation";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +32,7 @@ const App = () => (
             <Route path="/project/:id" element={<ProjectDetail />} />
             <Route path="/todos" element={<Todos />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/presentation" element={<Presentation />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
           <div className="fixed bottom-8 left-8 z-50">

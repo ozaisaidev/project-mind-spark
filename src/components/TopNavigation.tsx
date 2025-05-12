@@ -1,6 +1,6 @@
 
 import { Link, useLocation } from "react-router-dom"
-import { LogOut } from "lucide-react";
+import { LogOut, PresentationIcon } from "lucide-react";
 
 export function TopNavigation() {
   const location = useLocation();
@@ -35,13 +35,22 @@ export function TopNavigation() {
           </div>
         </nav>
         {!isLogin && (
-          <button
-            onClick={handleLogout}
-            className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center px-3 py-2 rounded-md hover:bg-zinc-800 transition-colors"
-            aria-label="Logout"
-          >
-            <LogOut className="text-zinc-300 hover:text-orange-400" size={24} />
-          </button>
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center space-x-3">
+            <Link 
+              to="/presentation" 
+              className="flex items-center px-3 py-2 rounded-md hover:bg-zinc-800 transition-colors"
+              aria-label="Presentations"
+            >
+              <PresentationIcon className="text-zinc-300 hover:text-orange-400" size={24} />
+            </Link>
+            <button
+              onClick={handleLogout}
+              className="flex items-center px-3 py-2 rounded-md hover:bg-zinc-800 transition-colors"
+              aria-label="Logout"
+            >
+              <LogOut className="text-zinc-300 hover:text-orange-400" size={24} />
+            </button>
+          </div>
         )}
       </div>
     </div>
