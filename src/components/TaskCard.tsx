@@ -1,7 +1,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Clock } from "lucide-react"
+import { Clock, Edit, Trash2 } from "lucide-react"
 import { TaskDetailDialog } from "./TaskDetailDialog"
 
 // New Mouse-bar animation helper (metallic light streak)
@@ -50,6 +50,18 @@ export function TaskCard({ title, description, status, eta, startedAt }: TaskCar
     else if (diff >= 60) timelineText = `${Math.floor(diff/60)}m ago`;
     else timelineText = `just now`;
   }
+
+  const handleEdit = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    console.log("Edit task:", title);
+    // Here you would implement edit functionality
+  };
+
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    console.log("Delete task:", title);
+    // Here you would implement delete functionality
+  };
 
   return (
     <>
@@ -116,6 +128,25 @@ export function TaskCard({ title, description, status, eta, startedAt }: TaskCar
             </p>
           </CardContent>
         )}
+        
+        {/* Action buttons - initially hidden, shown on hover */}
+        <div className="absolute bottom-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-2 flex space-x-2">
+          <button 
+            className="flex items-center justify-center rounded-full w-7 h-7 bg-[#1EAEDB] text-white hover:bg-[#1EAEDB]/90 transition-colors"
+            onClick={handleEdit}
+            aria-label="Edit task"
+          >
+            <Edit size={14} />
+          </button>
+          <button 
+            className="flex items-center justify-center rounded-full w-7 h-7 bg-[#ea384c] text-white hover:bg-[#ea384c]/90 transition-colors"
+            onClick={handleDelete}
+            aria-label="Delete task"
+          >
+            <Trash2 size={14} />
+          </button>
+        </div>
+        
         {/* Subtle white border on hover (animation) */}
         <div className="pointer-events-none absolute inset-0 rounded-2xl border-2 border-white transition-all duration-200 opacity-0 group-hover:opacity-50 z-30"></div>
       </Card>
@@ -127,4 +158,3 @@ export function TaskCard({ title, description, status, eta, startedAt }: TaskCar
     </>
   )
 }
-
